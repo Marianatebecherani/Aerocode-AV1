@@ -84,16 +84,35 @@ Ao iniciar o sistema pela primeira vez, use as seguintes credenciais para fazer 
 A partir deste usuário, você poderá cadastrar outros funcionários com diferentes níveis de permissão.
 
 ---
+## 📁 Estrutura do Projeto
 
+```
+aerocode/
+├── backups/
+├── data/
+│   ├── aeronaves/
+│   ├── funcionarios/
+│   ├── relatorios/
+│   └── reltorios/
+├── node_modules/
+├── src/
+│   ├── models/
+│   │   ├── aeronave.ts
+│   │   ├── etapa.ts
+│   │   ├── funcionario.ts
+│   │   ├── peca.ts
+│   │   ├── relatorio.ts
+│   │   └── teste.ts
+│   ├── services/
+│   │   └── persistence.ts
+│   ├── app.ts
+│   └── enums.ts
+├── package-lock.json
+├── package.json
+└── tsconfig.json
 
 ---
 
-## 📄 Licença
-
-Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
-
----
-
-Feito com ❤️ por Mariana.
+Feito por Mariana Tebecherani.
 
 
