@@ -1,0 +1,9 @@
+{
+  "id": "2",
+  "nome": "mariana",
+  "telefone": "222",
+  "endereco": "eee",
+  "usuario": "mariana",
+  "senha": "$2b$10$PDObzJhKDSL4PBl.X8tTyum5JDAYINNNBNUbEqIVby0oCsxworArK",
+  "nivelPermissao": "OPERADOR"
+}

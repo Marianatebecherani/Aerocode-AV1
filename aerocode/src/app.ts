@@ -310,26 +310,41 @@ async function verMinhasEtapas(operador: Funcionario) {
 }
 
 async function mudarStatusEtapa(operador: Funcionario, acao: 'iniciar' | 'finalizar') {
-    const codigoAeronave = await question("Digite o código da aeronave: ");
-    const aeronave = aeronaves.find(a => a.codigo === codigoAeronave);
-    if (!aeronave) { console.log("Erro: Aeronave não encontrada."); return; }
+    console.log(`\n--- ${acao.charAt(0).toUpperCase() + acao.slice(1)} Etapa ---`);
+    // 1. Encontrar todas as etapas associadas ao operador
+    const etapasDoOperador = aeronaves.flatMap(a => 
+        a.etapas
+         .filter(e => e.funcionarios.some(f => f.id === operador.id))
+         .map(e => ({ aeronave: a, etapa: e }))
+    );
 
-    const nomeEtapa = await question("Digite o nome da etapa para " + acao + ": ");
-    const etapa = aeronave.etapas.find(e => e.nome.toLowerCase() === nomeEtapa.toLowerCase() && e.funcionarios.some(f => f.id === operador.id));
+    if (etapasDoOperador.length === 0) {
+        console.log("Você não está associado a nenhuma etapa que possa ser alterada.");
+        return;
+    }
 
-    if (!etapa) { console.log("Erro: Etapa não encontrada ou você não tem permissão para alterá-la."); return; }
+    // 2. Pedir para o operador escolher uma de suas etapas
+    const escolha = await escolherObjetoDeLista(
+        "Escolha a etapa para " + acao + ":", 
+        etapasDoOperador, 
+        item => `Aeronave: ${item.aeronave.modelo} | Etapa: ${item.etapa.nome} | Status: ${item.etapa.status}`
+    );
 
-    if (acao === 'iniciar') etapa.iniciar();
-    else etapa.finalizar();
+    if (!escolha) {
+        return; // O usuário cancelou ou a escolha foi inválida
+    }
+
+    // 3. Executar a ação na etapa escolhida
+    if (acao === 'iniciar') escolha.etapa.iniciar();
+    else escolha.etapa.finalizar();
 }
 
 async function atualizarStatusPeca() {
     console.log("\n--- Atualizar Status de Peça ---");
 
-    const codigoAeronave = await question("Digite o código da aeronave que contém a peça: ");
-    const aeronave = aeronaves.find(a => a.codigo === codigoAeronave);
+    // 1. Escolher a aeronave
+    const aeronave = await escolherObjetoDeLista("Escolha a aeronave que contém a peça:", aeronaves, a => `${a.modelo} (${a.codigo})`);
     if (!aeronave) {
-        console.log("Erro: Aeronave não encontrada.");
         return;
     }
 
@@ -337,15 +352,9 @@ async function atualizarStatusPeca() {
         console.log("Esta aeronave não possui peças registradas.");
         return;
     }
-
-    console.log("Peças disponíveis nesta aeronave:");
-    aeronave.pecas.forEach(p => console.log(`- ${p.nome} (Status atual: ${p.status})`));
-
-    const nomePeca = await question("\nDigite o nome da peça que deseja atualizar: ");
-    const peca = aeronave.pecas.find(p => p.nome.toLowerCase() === nomePeca.toLowerCase());
-
+    // 2. Escolher a peça dentro da aeronave
+    const peca = await escolherObjetoDeLista("Escolha a peça que deseja atualizar:", aeronave.pecas, p => `${p.nome} (Status atual: ${p.status})`);
     if (!peca) {
-        console.log("Erro: Peça não encontrada nesta aeronave.");
         return;
     }
 
