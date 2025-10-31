@@ -67,7 +67,7 @@ npm install
 Use o `ts-node` para iniciar o sistema diretamente pelo arquivo principal.
 
 ```bash
-npx ts-node src/app.ts
+npm start
 ```
 
 > **💡 Dica:** Na primeira vez que você executar o projeto, o sistema detectará que não há funcionários cadastrados e criará automaticamente um usuário **Administrador** padrão para você começar.
