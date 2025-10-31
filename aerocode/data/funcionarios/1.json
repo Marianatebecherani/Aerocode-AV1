@@ -1,9 +1,0 @@
-{
-  "id": "1",
-  "nome": "Admin",
-  "telefone": "99999-9999",
-  "endereco": "Sao Jose dos Campos",
-  "usuario": "admin",
-  "senha": "$2b$10$W.TBo4s6EndQeHVj2VyAD.Y7Hk8H6MWSHhtMXy9e5Zt30m6JeJ5T.",
-  "nivelPermissao": "ADMINISTRADOR"
-}
