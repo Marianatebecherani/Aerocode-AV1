@@ -126,7 +126,7 @@ function carregarAeronaves() {
         // Hidratação dos objetos internos
         aero.pecas = obj.pecas.map((p: any) => Object.assign(new Peca(p.nome, p.tipo, p.fornecedor), p));
         aero.etapas = obj.etapas.map((e: any) => {
-            const etapa = Object.assign(new Etapa(e.nome, e.prazo), e);
+            const etapa = Object.assign(new Etapa(e.nome, e.prazo, e.ordem), e);
             etapa.funcionarios = e.funcionarios.map((funcId: string) => 
                 funcionarios.find(func => func.id === funcId)
             ).filter(Boolean) as Funcionario[]; // Remove nulos
@@ -228,7 +228,9 @@ async function menuEngenheiro() {
         console.log("2. Adicionar Etapa de Produção a uma Aeronave");
         console.log("3. Adicionar Teste a uma Aeronave");
         console.log("4. Associar Funcionário a uma Etapa");
-        console.log("5. Ver Detalhes da Aeronave");
+        console.log("5. Desassociar Funcionário de uma Etapa");
+        console.log("6. Listar Funcionários de uma Etapa");
+        console.log("7. Ver Detalhes da Aeronave");
         console.log("0. Salvar e Sair");
 
         const escolha = await question("Sua escolha: ");
@@ -246,6 +248,12 @@ async function menuEngenheiro() {
                 await associarFuncionarioEtapa();
                 break;
             case '5':
+                await desassociarFuncionarioEtapa();
+                break;
+            case '6':
+                await listarFuncionariosEtapa();
+                break;
+            case '7':
                 await verDetalhesAeronave();
                 break;
             case '0':
@@ -306,14 +314,14 @@ async function verMinhasEtapas(operador: Funcionario) {
 
     etapasDoOperador.forEach(({ aeronave, etapa }) => {
         console.log(`- Aeronave: ${aeronave.modelo} (${aeronave.codigo}) | Etapa: ${etapa.nome} | Status: ${etapa.status}`);
-    });
+    }); // Apenas para visualização, não precisa ordenar aqui.
 }
 
 async function mudarStatusEtapa(operador: Funcionario, acao: 'iniciar' | 'finalizar') {
     console.log(`\n--- ${acao.charAt(0).toUpperCase() + acao.slice(1)} Etapa ---`);
     // 1. Encontrar todas as etapas associadas ao operador
     const etapasDoOperador = aeronaves.flatMap(a => 
-        a.etapas
+        a.etapas.sort((e1, e2) => e1.ordem - e2.ordem) // Ordena para exibição
          .filter(e => e.funcionarios.some(f => f.id === operador.id))
          .map(e => ({ aeronave: a, etapa: e }))
     );
@@ -327,7 +335,7 @@ async function mudarStatusEtapa(operador: Funcionario, acao: 'iniciar' | 'finali
     const escolha = await escolherObjetoDeLista(
         "Escolha a etapa para " + acao + ":", 
         etapasDoOperador, 
-        item => `Aeronave: ${item.aeronave.modelo} | Etapa: ${item.etapa.nome} | Status: ${item.etapa.status}`
+        item => `Aeronave: ${item.aeronave.modelo} | Etapa: ${item.etapa.ordem}. ${item.etapa.nome} | Status: ${item.etapa.status}`
     );
 
     if (!escolha) {
@@ -335,8 +343,11 @@ async function mudarStatusEtapa(operador: Funcionario, acao: 'iniciar' | 'finali
     }
 
     // 3. Executar a ação na etapa escolhida
-    if (acao === 'iniciar') escolha.etapa.iniciar();
-    else escolha.etapa.finalizar();
+    if (acao === 'iniciar') {
+        escolha.etapa.iniciar(escolha.aeronave);
+    } else {
+        escolha.etapa.finalizar();
+    }
 }
 
 async function atualizarStatusPeca() {
@@ -395,9 +406,12 @@ async function adicionarEtapaAeronave() {
     const nome = await question("Nome da Etapa: ");
     const prazo = await question("Prazo (ex: 10 dias): ");
 
-    const novaEtapa = new Etapa(nome, prazo);
+    // A ordem é definida sequencialmente
+    const ordem = aeronave.etapas.length + 1;
+
+    const novaEtapa = new Etapa(nome, prazo, ordem);
     aeronave.etapas.push(novaEtapa);
-    console.log(`Etapa "${nome}" adicionada à aeronave ${aeronave.codigo}.`);
+    console.log(`Etapa "${nome}" (Ordem: ${ordem}) adicionada à aeronave ${aeronave.codigo}.`);
 }
 
 async function adicionarTesteAeronave() {
@@ -556,7 +570,7 @@ async function associarFuncionarioEtapa() {
         return;
     }
 
-    const etapa = await escolherObjetoDeLista("Escolha a etapa:", aeronave.etapas, e => `${e.nome} (Status: ${e.status})`);
+    const etapa = await escolherObjetoDeLista("Escolha a etapa:", aeronave.etapas.sort((a,b) => a.ordem - b.ordem), e => `${e.ordem}. ${e.nome} (Status: ${e.status})`);
     
     if (!etapa) {
         console.log("Erro: Escolha de etapa inválida.");
@@ -569,6 +583,47 @@ async function associarFuncionarioEtapa() {
     }
 
     etapa.associarFuncionario(funcionario);
+}
+
+async function desassociarFuncionarioEtapa() {
+    console.log("\n--- Desassociar Funcionário de uma Etapa ---");
+    const aeronave = await escolherObjetoDeLista("Primeiro, escolha a aeronave:", aeronaves, a => `${a.modelo} (${a.codigo})`);
+    if (!aeronave) {
+        return;
+    }
+
+    const etapa = await escolherObjetoDeLista("Escolha a etapa:", aeronave.etapas.sort((a,b) => a.ordem - b.ordem), e => `${e.ordem}. ${e.nome} (Funcionários: ${e.funcionarios.length})`);
+    if (!etapa) {
+        return;
+    }
+
+    if (etapa.funcionarios.length === 0) {
+        console.log("Não há funcionários associados a esta etapa para desassociar.");
+        return;
+    }
+
+    const funcionario = await escolherObjetoDeLista("Escolha o funcionário a ser desassociado:", etapa.funcionarios, f => `${f.nome} (ID: ${f.id})`);
+    if (!funcionario) {
+        return;
+    }
+
+    etapa.desassociarFuncionario(funcionario);
+}
+
+async function listarFuncionariosEtapa() {
+    console.log("\n--- Listar Funcionários de uma Etapa ---");
+    const aeronave = await escolherObjetoDeLista("Primeiro, escolha a aeronave:", aeronaves, a => `${a.modelo} (${a.codigo})`);
+    if (!aeronave) {
+        return;
+    }
+
+    const etapa = await escolherObjetoDeLista("Escolha a etapa para ver os funcionários:", aeronave.etapas.sort((a,b) => a.ordem - b.ordem), e => `${e.ordem}. ${e.nome} (Funcionários: ${e.funcionarios.length})`);
+    if (!etapa) {
+        return;
+    }
+
+    // A função listarFuncionarios já imprime os detalhes no console
+    etapa.listarFuncionarios();
 }
 
 async function fazerBackup() {

@@ -40,14 +40,14 @@ export class Aeronave {
         console.log(`Tipo: ${this.tipo}`);
         console.log(`Capacidade: ${this.capacidade} passageiros`);
         console.log(`Alcance: ${this.alcance} km`);
-        
-        console.log("\n--- Peças (${this.pecas.length}) ---");
+
+        console.log(`\n--- Peças (${this.pecas.length}) ---`);
         this.pecas.forEach(p => console.log(`- ${p.nome} (${p.status})`));
 
-        console.log("\n--- Etapas (${this.etapas.length}) ---");
+        console.log(`\n--- Etapas (${this.etapas.length}) ---`);
         this.etapas.forEach(e => console.log(`- ${e.nome} (${e.status})`));
-        
-        console.log("\n--- Testes (${this.testes.length}) ---");
+
+        console.log(`\n--- Testes (${this.testes.length}) ---`);
         this.testes.forEach(t => console.log(`- ${t.tipo} (${t.resultado})`));
         console.log("-------------------------------");
     }

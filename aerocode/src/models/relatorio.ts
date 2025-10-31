@@ -46,8 +46,9 @@ export class Relatorio {
         if (aeronave.etapas.length === 0) {
             rel += "Nenhuma etapa registrada.\n";
         } else {
-            aeronave.etapas.forEach(e => {
-                rel += `- Etapa: ${e.nome} (Prazo: ${e.prazo}, Status: ${e.status})\n`;
+            // Ordena as etapas por ordem antes de exibi-las
+            aeronave.etapas.sort((a, b) => a.ordem - b.ordem).forEach(e => {
+                rel += `- Etapa ${e.ordem}: ${e.nome} (Prazo: ${e.prazo}, Status: ${e.status})\n`;
                 const funcionarios = e.listarFuncionarios().map(f => f.nome).join(', ') || "Nenhum";
                 rel += `  (Funcionários: ${funcionarios})\n`;
             });
