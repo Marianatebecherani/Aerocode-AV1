@@ -503,7 +503,7 @@ async function gerarRelatorioProducao() {
     const cliente = await question("Nome do Cliente: ");
     const dataEntrega = await question("Data de Entrega (ex: DD/MM/AAAA): ");
 
-    const relatorio = new Relatorio();
+    const relatorio = new Relatorio(dataDirs.relatorios);
     relatorio.gerarRelatorio(aeronave, cliente, dataEntrega);
     relatorio.salvarEmArquivo();
 }

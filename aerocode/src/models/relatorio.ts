@@ -2,13 +2,13 @@ import { Aeronave } from "./aeronave";
 import * as fs from 'fs';
 import * as path from 'path';
 
-const dataDir = path.join(__dirname, '../../data/relatorios');
-
 export class Relatorio {
     private conteudo: string = "";
     private aeronaveCodigo: string = "";
     private cliente: string = "";
     private dataEntrega: string = "";
+
+    constructor(private dataDir: string = path.join(__dirname, '../../data/relatorios')) {}
 
     /**
      * Gera o conteúdo do relatório e o armazena internamente.
@@ -81,12 +81,12 @@ export class Relatorio {
             return;
         }
 
-        if (!fs.existsSync(dataDir)) {
-            fs.mkdirSync(dataDir, { recursive: true });
+        if (!fs.existsSync(this.dataDir)) {
+            fs.mkdirSync(this.dataDir, { recursive: true });
         }
 
         const fileName = `Relatorio_Aeronave_${this.aeronaveCodigo}.txt`;
-        const filePath = path.join(dataDir, fileName);
+        const filePath = path.join(this.dataDir, fileName);
 
         fs.writeFileSync(filePath, this.conteudo, 'utf-8');
         console.log(`Relatório salvo com sucesso em: ${filePath}`);
