@@ -39,6 +39,8 @@ async function escolherOpcaoEnum<T extends string>(query: string, enumObject: { 
 
     const escolha = parseInt(await question("Sua escolha: "), 10);
 
+    // 42: resposta do universo
+
     if (isNaN(escolha) || escolha < 1 || escolha > options.length) {
         console.log("Erro: Opção inválida.");
         return null;
@@ -82,6 +84,8 @@ let aeronaves: Aeronave[] = [];
 // --- Gerenciadores de Persistência ---
 let funcionarioManager: PersistenceManager<Funcionario>;
 let aeronaveManager: PersistenceManager<Aeronave>;
+
+type MenuAction = 'logout' | 'exit';
 
 // --- Lógica de Persistência (Carregamento) ---
 const dataDirs = {
@@ -170,8 +174,9 @@ async function login(): Promise<Funcionario | null> {
 }
 
 // --- Menus da Aplicação ---
-async function menuAdministrador() {
+async function menuAdministrador(): Promise<MenuAction> {
     let loop = true;
+    let action: MenuAction = 'logout';
     while (loop) {
         console.log("\n--- Menu Administrador ---");
         console.log("1. Cadastrar Funcionário");
@@ -182,6 +187,7 @@ async function menuAdministrador() {
         console.log("6. Gerar Relatório de Peças");
         console.log("7. Gerar Relatório de Andamento de Aeronave");
         console.log("8. Fazer Backup dos Dados");
+        console.log("9. Salvar e Logout");
         console.log("0. Salvar e Sair");
         console.log("---");
 
@@ -211,17 +217,24 @@ async function menuAdministrador() {
             case '8':
                 await fazerBackup();
                 break;
+            case '9':
+                action = 'logout';
+                loop = false;
+                break;
             case '0':
+                action = 'exit';
                 loop = false;
                 break;
             default:
                 console.log("Opção inválida.");
         }
     }
+    return action;
 }
 
-async function menuEngenheiro() {
+async function menuEngenheiro(): Promise<MenuAction> {
     let loop = true;
+    let action: MenuAction = 'logout';
     while (loop) {
         console.log("\n--- Menu Engenheiro ---");
         console.log("1. Adicionar Peça a uma Aeronave");
@@ -231,6 +244,7 @@ async function menuEngenheiro() {
         console.log("5. Desassociar Funcionário de uma Etapa");
         console.log("6. Listar Funcionários de uma Etapa");
         console.log("7. Ver Detalhes da Aeronave");
+        console.log("9. Salvar e Logout");
         console.log("0. Salvar e Sair");
 
         const escolha = await question("Sua escolha: ");
@@ -256,23 +270,31 @@ async function menuEngenheiro() {
             case '7':
                 await verDetalhesAeronave();
                 break;
+            case '9':
+                action = 'logout';
+                loop = false;
+                break;
             case '0':
+                action = 'exit';
                 loop = false;
                 break;
             default:
                 console.log("Opção inválida.");
         }
     }
+    return action;
 }
 
-async function menuOperador(operador: Funcionario) {
+async function menuOperador(operador: Funcionario): Promise<MenuAction> {
     let loop = true;
+    let action: MenuAction = 'logout';
     while (loop) {
         console.log("\n--- Menu Operador ---");
         console.log("1. Ver Minhas Etapas de Produção");
         console.log("2. Iniciar Etapa");
         console.log("3. Finalizar Etapa");
         console.log("4. Atualizar Status de Peça");
+        console.log("9. Salvar e Logout");
         console.log("0. Salvar e Sair");
 
         const escolha = await question("Sua escolha: ");
@@ -289,13 +311,19 @@ async function menuOperador(operador: Funcionario) {
             case '4':
                 await atualizarStatusPeca();
                 break;
+            case '9':
+                action = 'logout';
+                loop = false;
+                break;
             case '0':
+                action = 'exit';
                 loop = false;
                 break;
             default:
                 console.log("Opção inválida.");
         }
     }
+    return action;
 }
 
 // --- Funções do Menu Operador ---
@@ -685,16 +713,20 @@ async function main() {
 
         if (usuarioLogado) {
             // 5. Direcionar para o menu correto
+            let menuAction: MenuAction = 'logout';
             switch (usuarioLogado.nivelPermissao) {
                 case NivelPermissao.ADMINISTRADOR:
-                    await menuAdministrador();
+                    menuAction = await menuAdministrador();
                     break;
                 case NivelPermissao.ENGENHEIRO:
-                    await menuEngenheiro();
+                    menuAction = await menuEngenheiro();
                     break;
                 case NivelPermissao.OPERADOR:
-                    await menuOperador(usuarioLogado);
+                    menuAction = await menuOperador(usuarioLogado);
                     break;
+            }
+            if (menuAction === 'exit') {
+                rodando = false;
             }
             salvarTudo(); // Salva os dados após o usuário sair do seu menu
         } else {
