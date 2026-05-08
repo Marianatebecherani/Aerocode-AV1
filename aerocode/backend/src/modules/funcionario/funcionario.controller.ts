@@ -1,4 +1,4 @@
-import { AtualizarFuncionarioDTO, CriarFuncionarioDTO } from "./funcionario.entity";
+import { AtualizarFuncionarioDTO, CriarFuncionarioDTO, ListarFuncionariosDTO } from "./funcionario.entity";
 import { FuncionarioService } from "./funcionario.service";
 
 export class FuncionarioController {
@@ -8,8 +8,8 @@ export class FuncionarioController {
         return this.funcionarioService.criar(dto);
     }
 
-    async listar() {
-        return this.funcionarioService.listar();
+    async listar(filtros: ListarFuncionariosDTO) {
+        return this.funcionarioService.listar(filtros);
     }
 
     async buscarPorId(id: string) {

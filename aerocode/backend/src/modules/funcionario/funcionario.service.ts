@@ -3,7 +3,10 @@ import {
     AtualizarFuncionarioDTO,
     CriarFuncionarioDTO,
     Funcionario,
-    FuncionarioResponseDTO
+    FuncionarioResponseDTO,
+    ListarFuncionariosDTO,
+    ListarFuncionariosResponseDTO,
+    NivelPermissao
 } from "./funcionario.entity";
 import { FuncionarioRepository } from "./funcionario.repository";
 
@@ -30,9 +33,37 @@ export class FuncionarioService {
         return funcionarioCriado.toResponse();
     }
 
-    async listar(): Promise<FuncionarioResponseDTO[]> {
+    async listar(filtros: ListarFuncionariosDTO = {}): Promise<ListarFuncionariosResponseDTO> {
+        const termo = filtros.termo?.trim().toLowerCase();
+        const nivelPermissao = this.normalizarNivelPermissaoFiltro(filtros.nivelPermissao);
+        const page = this.normalizarInteiroPositivo(filtros.page, 1, "page");
+        const limit = this.normalizarInteiroPositivo(filtros.limit, 10, "limit");
+
         const funcionarios = await this.funcionarioRepository.listar();
-        return funcionarios.map((funcionario) => funcionario.toResponse());
+        const funcionariosFiltrados = funcionarios.filter((funcionario) => {
+            const atendeTermo =
+                !termo ||
+                funcionario.nome.toLowerCase().includes(termo) ||
+                funcionario.usuario.toLowerCase().includes(termo);
+            const atendeNivel = !nivelPermissao || funcionario.nivelPermissao === nivelPermissao;
+
+            return atendeTermo && atendeNivel;
+        });
+
+        const total = funcionariosFiltrados.length;
+        const totalPages = Math.ceil(total / limit);
+        const inicio = (page - 1) * limit;
+        const dados = funcionariosFiltrados.slice(inicio, inicio + limit).map((funcionario) => funcionario.toResponse());
+
+        return {
+            dados,
+            paginacao: {
+                total,
+                page,
+                limit,
+                totalPages
+            }
+        };
     }
 
     async buscarPorId(id: string): Promise<FuncionarioResponseDTO | null> {
@@ -77,5 +108,31 @@ export class FuncionarioService {
         }
 
         return bcrypt.hash(senha, 10);
+    }
+
+    private normalizarNivelPermissaoFiltro(nivelPermissao?: string): NivelPermissao | undefined {
+        if (!nivelPermissao || nivelPermissao.trim().length === 0) {
+            return undefined;
+        }
+
+        const nivelNormalizado = nivelPermissao.trim().toUpperCase() as NivelPermissao;
+        if (!Object.values(NivelPermissao).includes(nivelNormalizado)) {
+            throw new Error("Nivel de permissao do funcionario invalido.");
+        }
+
+        return nivelNormalizado;
+    }
+
+    private normalizarInteiroPositivo(valor: string | undefined, padrao: number, campo: string): number {
+        if (!valor || valor.trim().length === 0) {
+            return padrao;
+        }
+
+        const numero = Number(valor);
+        if (!Number.isInteger(numero) || numero < 1) {
+            throw new Error(`Parametro ${campo} deve ser um numero inteiro positivo.`);
+        }
+
+        return numero;
     }
 }

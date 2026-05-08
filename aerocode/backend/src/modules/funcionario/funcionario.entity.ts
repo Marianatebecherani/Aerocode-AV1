@@ -22,6 +22,20 @@ export type AtualizarFuncionarioDTO = {
     nivelPermissao?: NivelPermissao | string;
 };
 
+export type ListarFuncionariosDTO = {
+    termo?: string;
+    nivelPermissao?: string;
+    page?: string;
+    limit?: string;
+};
+
+export type PaginacaoResponseDTO = {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+};
+
 export type FuncionarioResponseDTO = {
     id: string;
     nome: string;
@@ -29,6 +43,11 @@ export type FuncionarioResponseDTO = {
     endereco: string;
     usuario: string;
     nivelPermissao: NivelPermissao;
+};
+
+export type ListarFuncionariosResponseDTO = {
+    dados: FuncionarioResponseDTO[];
+    paginacao: PaginacaoResponseDTO;
 };
 
 export type FuncionarioProps = {

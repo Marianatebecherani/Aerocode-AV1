@@ -53,19 +53,85 @@ funcionarioRoutes.post("/", async (req, res) => {
  *     summary: Lista todos os funcionarios cadastrados.
  *     tags:
  *       - Funcionarios
+ *     parameters:
+ *       - in: query
+ *         name: termo
+ *         required: false
+ *         schema:
+ *           type: string
+ *         description: Busca por termo no nome ou usuario do funcionario.
+ *         example: maria
+ *       - in: query
+ *         name: nivelPermissao
+ *         required: false
+ *         schema:
+ *           type: string
+ *           enum: [ADMINISTRADOR, ENGENHEIRO, OPERADOR]
+ *         description: Filtra funcionarios pelo nivel de permissao.
+ *         example: engenheiro
+ *       - in: query
+ *         name: page
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *         description: Pagina desejada.
+ *       - in: query
+ *         name: limit
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 10
+ *         description: Quantidade de itens por pagina.
  *     responses:
  *       200:
- *         description: Lista de funcionarios.
+ *         description: Lista paginada de funcionarios.
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Funcionario'
+ *               type: object
+ *               properties:
+ *                 dados:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Funcionario'
+ *                 paginacao:
+ *                   type: object
+ *                   properties:
+ *                     total:
+ *                       type: integer
+ *                       example: 25
+ *                     page:
+ *                       type: integer
+ *                       example: 1
+ *                     limit:
+ *                       type: integer
+ *                       example: 10
+ *                     totalPages:
+ *                       type: integer
+ *                       example: 3
+ *       400:
+ *         description: Filtros ou parametros de paginacao invalidos.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
-funcionarioRoutes.get("/", async (_req, res) => {
-    const funcionarios = await funcionarioController.listar();
-    res.json(funcionarios);
+funcionarioRoutes.get("/", async (req, res) => {
+    try {
+        const funcionarios = await funcionarioController.listar({
+            ...(typeof req.query.termo === "string" ? { termo: req.query.termo } : {}),
+            ...(typeof req.query.nivelPermissao === "string" ? { nivelPermissao: req.query.nivelPermissao } : {}),
+            ...(typeof req.query.page === "string" ? { page: req.query.page } : {}),
+            ...(typeof req.query.limit === "string" ? { limit: req.query.limit } : {})
+        });
+        res.json(funcionarios);
+    } catch (error) {
+        const message = error instanceof Error ? error.message : "Erro ao listar funcionarios.";
+        res.status(400).json({ message });
+    }
 });
 
 /**
