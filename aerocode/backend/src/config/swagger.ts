@@ -246,6 +246,99 @@ const swaggerDefinition = {
                     }
                 }
             },
+            Funcionario: {
+                type: "object",
+                properties: {
+                    id: {
+                        type: "string",
+                        example: "1"
+                    },
+                    nome: {
+                        type: "string",
+                        example: "Maria Santos"
+                    },
+                    telefone: {
+                        type: "string",
+                        example: "(11) 99999-9999"
+                    },
+                    endereco: {
+                        type: "string",
+                        example: "Rua das Aeronaves, 123"
+                    },
+                    usuario: {
+                        type: "string",
+                        example: "maria.santos"
+                    },
+                    nivelPermissao: {
+                        type: "string",
+                        enum: ["ADMINISTRADOR", "ENGENHEIRO", "OPERADOR"],
+                        example: "ENGENHEIRO"
+                    }
+                }
+            },
+            CriarFuncionario: {
+                type: "object",
+                required: ["nome", "telefone", "endereco", "usuario", "senha", "nivelPermissao"],
+                properties: {
+                    nome: {
+                        type: "string",
+                        example: "Maria Santos"
+                    },
+                    telefone: {
+                        type: "string",
+                        example: "(11) 99999-9999"
+                    },
+                    endereco: {
+                        type: "string",
+                        example: "Rua das Aeronaves, 123"
+                    },
+                    usuario: {
+                        type: "string",
+                        example: "maria.santos"
+                    },
+                    senha: {
+                        type: "string",
+                        format: "password",
+                        example: "Senha@123"
+                    },
+                    nivelPermissao: {
+                        type: "string",
+                        enum: ["ADMINISTRADOR", "ENGENHEIRO", "OPERADOR"],
+                        example: "ENGENHEIRO"
+                    }
+                }
+            },
+            AtualizarFuncionario: {
+                type: "object",
+                properties: {
+                    nome: {
+                        type: "string",
+                        example: "Maria Santos"
+                    },
+                    telefone: {
+                        type: "string",
+                        example: "(11) 98888-8888"
+                    },
+                    endereco: {
+                        type: "string",
+                        example: "Avenida AeroCode, 456"
+                    },
+                    usuario: {
+                        type: "string",
+                        example: "maria.santos"
+                    },
+                    senha: {
+                        type: "string",
+                        format: "password",
+                        example: "NovaSenha@123"
+                    },
+                    nivelPermissao: {
+                        type: "string",
+                        enum: ["ADMINISTRADOR", "ENGENHEIRO", "OPERADOR"],
+                        example: "ADMINISTRADOR"
+                    }
+                }
+            },
             ErrorResponse: {
                 type: "object",
                 properties: {
