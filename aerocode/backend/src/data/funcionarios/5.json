@@ -1,0 +1,9 @@
+{
+  "id": "5",
+  "nome": "Marcos Vinicius Rocha",
+  "telefone": "(12) 99222-2001",
+  "endereco": "Av. Cidade Jardim, 900 - São José dos Campos/SP",
+  "usuario": "marcos.eng",
+  "senha": "$2b$10$7Gzeg7ohWQCkA8ek/3L6au5HT2owuMIo7Pxueq6lzZrZvRAlw.rVW",
+  "nivelPermissao": "ENGENHEIRO"
+}

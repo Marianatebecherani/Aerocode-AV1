@@ -1,0 +1,17 @@
+{
+  "id": "7",
+  "tipo": "ELETRICO",
+  "aeronaveCodigo": "AER-0003",
+  "resultadoTracker": {
+    "atual": {
+      "resultado": "APROVADO",
+      "data": "2026-05-08T21:26:30.393Z"
+    },
+    "historico": [
+      {
+        "resultado": "APROVADO",
+        "data": "2026-05-08T21:26:30.393Z"
+      }
+    ]
+  }
+}

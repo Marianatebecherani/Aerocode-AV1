@@ -1,0 +1,23 @@
+{
+  "id": "10",
+  "nome": "Configuração de Radar",
+  "prazoConclusao": "2026-08-05T18:00:00.000Z",
+  "prioridade": 2,
+  "statusTracker": {
+    "atual": {
+      "status": "PENDENTE",
+      "data": "2026-05-08T21:26:30.386Z"
+    },
+    "historico": [
+      {
+        "status": "PENDENTE",
+        "data": "2026-05-08T21:26:30.386Z"
+      }
+    ]
+  },
+  "aeronaveCodigo": "AER-0003",
+  "funcionariosIds": [
+    "6",
+    "12"
+  ]
+}

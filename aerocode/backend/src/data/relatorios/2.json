@@ -1,0 +1,136 @@
+{
+  "id": "2",
+  "aeronaveCodigo": "AER-0002",
+  "dataEmissao": "2026-05-08T21:26:30.408Z",
+  "detalhes": {
+    "codigo": "AER-0002",
+    "modelo": "Airbus A320neo",
+    "tipo": "COMERCIAL",
+    "capacidade": 195,
+    "alcance": 6300,
+    "etapas": [
+      {
+        "nome": "Montagem Estrutural",
+        "prazoConclusao": "2026-07-05",
+        "prioridade": 1,
+        "status": "PENDENTE",
+        "data": "2026-05-08T21:26:30.384Z",
+        "funcionarios": [
+          {
+            "nome": "Marcos Vinicius Rocha",
+            "funcao": "ENGENHEIRO"
+          },
+          {
+            "nome": "Larissa Monteiro Dias",
+            "funcao": "OPERADOR"
+          }
+        ]
+      },
+      {
+        "nome": "Calibração de Sensores",
+        "prazoConclusao": "2026-07-10",
+        "prioridade": 2,
+        "status": "PENDENTE",
+        "data": "2026-05-08T21:26:30.385Z",
+        "funcionarios": [
+          {
+            "nome": "Patrícia Moraes Silva",
+            "funcao": "ENGENHEIRO"
+          },
+          {
+            "nome": "Gustavo Pereira Lima",
+            "funcao": "OPERADOR"
+          }
+        ]
+      },
+      {
+        "nome": "Configuração de Software",
+        "prazoConclusao": "2026-07-15",
+        "prioridade": 3,
+        "status": "PENDENTE",
+        "data": "2026-05-08T21:26:30.385Z",
+        "funcionarios": [
+          {
+            "nome": "André Luiz Ferreira",
+            "funcao": "ENGENHEIRO"
+          },
+          {
+            "nome": "Bianca Teixeira Oliveira",
+            "funcao": "OPERADOR"
+          }
+        ]
+      },
+      {
+        "nome": "Validação Operacional",
+        "prazoConclusao": "2026-07-18",
+        "prioridade": 4,
+        "status": "PENDENTE",
+        "data": "2026-05-08T21:26:30.385Z",
+        "funcionarios": [
+          {
+            "nome": "Camila Ribeiro Gomes",
+            "funcao": "ENGENHEIRO"
+          },
+          {
+            "nome": "Eduardo Nunes Santos",
+            "funcao": "OPERADOR"
+          }
+        ]
+      }
+    ],
+    "pecas": [
+      {
+        "nome": "Freio Aerodinâmico",
+        "tipo": "NACIONAL",
+        "fornecedor": "Akaer",
+        "status": "EM_PRODUCAO",
+        "data": "2026-05-08T21:26:30.377Z"
+      },
+      {
+        "nome": "Asa Direita",
+        "tipo": "NACIONAL",
+        "fornecedor": "Avibras",
+        "status": "EM_PRODUCAO",
+        "data": "2026-05-08T21:26:30.375Z"
+      },
+      {
+        "nome": "Asa Esquerda",
+        "tipo": "NACIONAL",
+        "fornecedor": "Avibras",
+        "status": "EM_PRODUCAO",
+        "data": "2026-05-08T21:26:30.375Z"
+      },
+      {
+        "nome": "Cockpit Digital",
+        "tipo": "IMPORTADA",
+        "fornecedor": "Thales",
+        "status": "EM_PRODUCAO",
+        "data": "2026-05-08T21:26:30.376Z"
+      },
+      {
+        "nome": "Sistema Hidráulico",
+        "tipo": "IMPORTADA",
+        "fornecedor": "Parker Aerospace",
+        "status": "EM_PRODUCAO",
+        "data": "2026-05-08T21:26:30.376Z"
+      }
+    ],
+    "testes": [
+      {
+        "tipo": "ELETRICO",
+        "resultado": "APROVADO",
+        "data": "2026-05-08T21:26:30.391Z"
+      },
+      {
+        "tipo": "HIDRAULICO",
+        "resultado": "REPROVADO",
+        "data": "2026-05-08T21:26:30.391Z"
+      },
+      {
+        "tipo": "AERODINAMICO",
+        "resultado": "APROVADO",
+        "data": "2026-05-08T21:26:30.392Z"
+      }
+    ]
+  }
+}

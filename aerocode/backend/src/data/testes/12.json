@@ -1,0 +1,17 @@
+{
+  "id": "12",
+  "tipo": "AERODINAMICO",
+  "aeronaveCodigo": "AER-0004",
+  "resultadoTracker": {
+    "atual": {
+      "resultado": "APROVADO",
+      "data": "2026-05-08T21:26:30.395Z"
+    },
+    "historico": [
+      {
+        "resultado": "APROVADO",
+        "data": "2026-05-08T21:26:30.395Z"
+      }
+    ]
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "id": "13",
+  "nome": "Motor Turboélice",
+  "tipo": "IMPORTADA",
+  "fornecedor": "Rolls-Royce",
+  "aeronaveCodigo": "AER-0003",
+  "statusTracker": {
+    "atual": {
+      "status": "EM_PRODUCAO",
+      "data": "2026-05-08T21:26:30.378Z"
+    },
+    "historico": [
+      {
+        "status": "EM_PRODUCAO",
+        "data": "2026-05-08T21:26:30.378Z"
+      }
+    ]
+  }
+}

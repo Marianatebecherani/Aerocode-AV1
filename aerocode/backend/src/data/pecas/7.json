@@ -1,0 +1,19 @@
+{
+  "id": "7",
+  "nome": "Asa Esquerda",
+  "tipo": "NACIONAL",
+  "fornecedor": "Avibras",
+  "aeronaveCodigo": "AER-0002",
+  "statusTracker": {
+    "atual": {
+      "status": "EM_PRODUCAO",
+      "data": "2026-05-08T21:26:30.375Z"
+    },
+    "historico": [
+      {
+        "status": "EM_PRODUCAO",
+        "data": "2026-05-08T21:26:30.375Z"
+      }
+    ]
+  }
+}

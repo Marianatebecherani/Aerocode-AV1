@@ -1,0 +1,9 @@
+{
+  "id": "1",
+  "nome": "Carlos Henrique Souza",
+  "telefone": "(12) 99111-1001",
+  "endereco": "Rua das Palmeiras, 120 - São José dos Campos/SP",
+  "usuario": "carlos.admin",
+  "senha": "$2b$10$cxV8NmbGhEYS5Rq2RAMza.DVlV9k0Bs8yhXlLNFTtJwppDdjUfmdm",
+  "nivelPermissao": "ADMINISTRADOR"
+}

@@ -1,0 +1,23 @@
+{
+  "id": "14",
+  "nome": "Ajuste de Sensores",
+  "prazoConclusao": "2026-09-06T18:00:00.000Z",
+  "prioridade": 2,
+  "statusTracker": {
+    "atual": {
+      "status": "PENDENTE",
+      "data": "2026-05-08T21:26:30.388Z"
+    },
+    "historico": [
+      {
+        "status": "PENDENTE",
+        "data": "2026-05-08T21:26:30.388Z"
+      }
+    ]
+  },
+  "aeronaveCodigo": "AER-0004",
+  "funcionariosIds": [
+    "6",
+    "9"
+  ]
+}

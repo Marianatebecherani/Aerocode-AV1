@@ -1,0 +1,19 @@
+{
+  "id": "17",
+  "nome": "Sensor Térmico",
+  "tipo": "IMPORTADA",
+  "fornecedor": "Northrop Grumman",
+  "aeronaveCodigo": "AER-0004",
+  "statusTracker": {
+    "atual": {
+      "status": "EM_PRODUCAO",
+      "data": "2026-05-08T21:26:30.380Z"
+    },
+    "historico": [
+      {
+        "status": "EM_PRODUCAO",
+        "data": "2026-05-08T21:26:30.380Z"
+      }
+    ]
+  }
+}

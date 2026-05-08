@@ -1,0 +1,9 @@
+{
+  "id": "7",
+  "nome": "André Luiz Ferreira",
+  "telefone": "(12) 99222-2003",
+  "endereco": "Rua das Acácias, 300 - São José dos Campos/SP",
+  "usuario": "andre.eng",
+  "senha": "$2b$10$/6bCTZ6owvXQHvKDNeigtu.F81jrTtHdrQublKSn0LASzhh5bVEsm",
+  "nivelPermissao": "ENGENHEIRO"
+}

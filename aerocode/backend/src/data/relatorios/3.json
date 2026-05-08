@@ -1,0 +1,136 @@
+{
+  "id": "3",
+  "aeronaveCodigo": "AER-0003",
+  "dataEmissao": "2026-05-08T21:26:30.412Z",
+  "detalhes": {
+    "codigo": "AER-0003",
+    "modelo": "Embraer KC-390",
+    "tipo": "MILITAR",
+    "capacidade": 80,
+    "alcance": 2815,
+    "etapas": [
+      {
+        "nome": "Configuração de Radar",
+        "prazoConclusao": "2026-08-05",
+        "prioridade": 2,
+        "status": "PENDENTE",
+        "data": "2026-05-08T21:26:30.386Z",
+        "funcionarios": [
+          {
+            "nome": "Patrícia Moraes Silva",
+            "funcao": "ENGENHEIRO"
+          },
+          {
+            "nome": "Bianca Teixeira Oliveira",
+            "funcao": "OPERADOR"
+          }
+        ]
+      },
+      {
+        "nome": "Teste de Comunicação",
+        "prazoConclusao": "2026-08-09",
+        "prioridade": 3,
+        "status": "PENDENTE",
+        "data": "2026-05-08T21:26:30.387Z",
+        "funcionarios": [
+          {
+            "nome": "André Luiz Ferreira",
+            "funcao": "ENGENHEIRO"
+          },
+          {
+            "nome": "Eduardo Nunes Santos",
+            "funcao": "OPERADOR"
+          }
+        ]
+      },
+      {
+        "nome": "Homologação Militar",
+        "prazoConclusao": "2026-08-15",
+        "prioridade": 4,
+        "status": "PENDENTE",
+        "data": "2026-05-08T21:26:30.387Z",
+        "funcionarios": [
+          {
+            "nome": "Camila Ribeiro Gomes",
+            "funcao": "ENGENHEIRO"
+          },
+          {
+            "nome": "Larissa Monteiro Dias",
+            "funcao": "OPERADOR"
+          }
+        ]
+      },
+      {
+        "nome": "Instalação de Blindagem",
+        "prazoConclusao": "2026-08-01",
+        "prioridade": 1,
+        "status": "PENDENTE",
+        "data": "2026-05-08T21:26:30.386Z",
+        "funcionarios": [
+          {
+            "nome": "Marcos Vinicius Rocha",
+            "funcao": "ENGENHEIRO"
+          },
+          {
+            "nome": "Gustavo Pereira Lima",
+            "funcao": "OPERADOR"
+          }
+        ]
+      }
+    ],
+    "pecas": [
+      {
+        "nome": "Compartimento de Carga",
+        "tipo": "NACIONAL",
+        "fornecedor": "Embraer Defense",
+        "status": "EM_PRODUCAO",
+        "data": "2026-05-08T21:26:30.377Z"
+      },
+      {
+        "nome": "Radar Militar",
+        "tipo": "IMPORTADA",
+        "fornecedor": "Raytheon",
+        "status": "EM_PRODUCAO",
+        "data": "2026-05-08T21:26:30.378Z"
+      },
+      {
+        "nome": "Motor Turboélice",
+        "tipo": "IMPORTADA",
+        "fornecedor": "Rolls-Royce",
+        "status": "EM_PRODUCAO",
+        "data": "2026-05-08T21:26:30.378Z"
+      },
+      {
+        "nome": "Blindagem Inferior",
+        "tipo": "NACIONAL",
+        "fornecedor": "CBC Aero",
+        "status": "EM_PRODUCAO",
+        "data": "2026-05-08T21:26:30.379Z"
+      },
+      {
+        "nome": "Sistema de Comunicação",
+        "tipo": "IMPORTADA",
+        "fornecedor": "Motorola Aerospace",
+        "status": "EM_PRODUCAO",
+        "data": "2026-05-08T21:26:30.379Z"
+      }
+    ],
+    "testes": [
+      {
+        "tipo": "ELETRICO",
+        "resultado": "APROVADO",
+        "data": "2026-05-08T21:26:30.393Z"
+      },
+      {
+        "tipo": "HIDRAULICO",
+        "resultado": "APROVADO",
+        "data": "2026-05-08T21:26:30.393Z"
+      },
+      {
+        "tipo": "AERODINAMICO",
+        "resultado": "APROVADO",
+        "data": "2026-05-08T21:26:30.394Z"
+      }
+    ]
+  }
+}

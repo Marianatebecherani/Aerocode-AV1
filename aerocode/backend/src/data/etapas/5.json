@@ -1,0 +1,23 @@
+{
+  "id": "5",
+  "nome": "Montagem Estrutural",
+  "prazoConclusao": "2026-07-05T18:00:00.000Z",
+  "prioridade": 1,
+  "statusTracker": {
+    "atual": {
+      "status": "PENDENTE",
+      "data": "2026-05-08T21:26:30.384Z"
+    },
+    "historico": [
+      {
+        "status": "PENDENTE",
+        "data": "2026-05-08T21:26:30.384Z"
+      }
+    ]
+  },
+  "aeronaveCodigo": "AER-0002",
+  "funcionariosIds": [
+    "5",
+    "10"
+  ]
+}

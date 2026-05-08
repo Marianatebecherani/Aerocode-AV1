@@ -1,0 +1,23 @@
+{
+  "id": "2",
+  "nome": "Instalação Elétrica",
+  "prazoConclusao": "2026-06-15T18:00:00.000Z",
+  "prioridade": 2,
+  "statusTracker": {
+    "atual": {
+      "status": "PENDENTE",
+      "data": "2026-05-08T21:26:30.383Z"
+    },
+    "historico": [
+      {
+        "status": "PENDENTE",
+        "data": "2026-05-08T21:26:30.383Z"
+      }
+    ]
+  },
+  "aeronaveCodigo": "AER-0001",
+  "funcionariosIds": [
+    "6",
+    "10"
+  ]
+}

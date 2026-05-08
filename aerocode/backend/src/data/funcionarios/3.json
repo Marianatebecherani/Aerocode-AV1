@@ -1,0 +1,9 @@
+{
+  "id": "3",
+  "nome": "Ricardo Mendes Costa",
+  "telefone": "(12) 99111-1003",
+  "endereco": "Rua Saturnino de Brito, 88 - Jacareí/SP",
+  "usuario": "ricardo.admin",
+  "senha": "$2b$10$mZBqzpcOwXDP9WMLNVkK6OYkFAFoYuoPKNwahxiMxlRiJScGkGk8.",
+  "nivelPermissao": "ADMINISTRADOR"
+}

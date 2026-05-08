@@ -1,0 +1,23 @@
+{
+  "id": "13",
+  "nome": "Integração de Armamentos",
+  "prazoConclusao": "2026-09-01T18:00:00.000Z",
+  "prioridade": 1,
+  "statusTracker": {
+    "atual": {
+      "status": "PENDENTE",
+      "data": "2026-05-08T21:26:30.387Z"
+    },
+    "historico": [
+      {
+        "status": "PENDENTE",
+        "data": "2026-05-08T21:26:30.387Z"
+      }
+    ]
+  },
+  "aeronaveCodigo": "AER-0004",
+  "funcionariosIds": [
+    "5",
+    "12"
+  ]
+}

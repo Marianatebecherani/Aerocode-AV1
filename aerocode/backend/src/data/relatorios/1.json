@@ -1,0 +1,136 @@
+{
+  "id": "1",
+  "aeronaveCodigo": "AER-0001",
+  "dataEmissao": "2026-05-08T21:26:30.401Z",
+  "detalhes": {
+    "codigo": "AER-0001",
+    "modelo": "Boeing 737 MAX 8",
+    "tipo": "COMERCIAL",
+    "capacidade": 210,
+    "alcance": 6570,
+    "etapas": [
+      {
+        "nome": "Montagem da Fuselagem",
+        "prazoConclusao": "2026-06-10",
+        "prioridade": 1,
+        "status": "PENDENTE",
+        "data": "2026-05-08T21:26:30.382Z",
+        "funcionarios": [
+          {
+            "nome": "Marcos Vinicius Rocha",
+            "funcao": "ENGENHEIRO"
+          },
+          {
+            "nome": "Eduardo Nunes Santos",
+            "funcao": "OPERADOR"
+          }
+        ]
+      },
+      {
+        "nome": "Instalação Elétrica",
+        "prazoConclusao": "2026-06-15",
+        "prioridade": 2,
+        "status": "PENDENTE",
+        "data": "2026-05-08T21:26:30.383Z",
+        "funcionarios": [
+          {
+            "nome": "Patrícia Moraes Silva",
+            "funcao": "ENGENHEIRO"
+          },
+          {
+            "nome": "Larissa Monteiro Dias",
+            "funcao": "OPERADOR"
+          }
+        ]
+      },
+      {
+        "nome": "Integração do Cockpit",
+        "prazoConclusao": "2026-06-20",
+        "prioridade": 3,
+        "status": "PENDENTE",
+        "data": "2026-05-08T21:26:30.383Z",
+        "funcionarios": [
+          {
+            "nome": "André Luiz Ferreira",
+            "funcao": "ENGENHEIRO"
+          },
+          {
+            "nome": "Gustavo Pereira Lima",
+            "funcao": "OPERADOR"
+          }
+        ]
+      },
+      {
+        "nome": "Inspeção Final",
+        "prazoConclusao": "2026-06-25",
+        "prioridade": 4,
+        "status": "PENDENTE",
+        "data": "2026-05-08T21:26:30.384Z",
+        "funcionarios": [
+          {
+            "nome": "Camila Ribeiro Gomes",
+            "funcao": "ENGENHEIRO"
+          },
+          {
+            "nome": "Bianca Teixeira Oliveira",
+            "funcao": "OPERADOR"
+          }
+        ]
+      }
+    ],
+    "pecas": [
+      {
+        "nome": "Turbina Esquerda",
+        "tipo": "IMPORTADA",
+        "fornecedor": "GE Aerospace",
+        "status": "EM_PRODUCAO",
+        "data": "2026-05-08T21:26:30.372Z"
+      },
+      {
+        "nome": "Turbina Direita",
+        "tipo": "IMPORTADA",
+        "fornecedor": "GE Aerospace",
+        "status": "EM_PRODUCAO",
+        "data": "2026-05-08T21:26:30.373Z"
+      },
+      {
+        "nome": "Trem de Pouso",
+        "tipo": "NACIONAL",
+        "fornecedor": "Embraer Systems",
+        "status": "EM_PRODUCAO",
+        "data": "2026-05-08T21:26:30.373Z"
+      },
+      {
+        "nome": "Painel de Controle",
+        "tipo": "IMPORTADA",
+        "fornecedor": "Honeywell",
+        "status": "EM_PRODUCAO",
+        "data": "2026-05-08T21:26:30.373Z"
+      },
+      {
+        "nome": "Sistema de Navegação",
+        "tipo": "IMPORTADA",
+        "fornecedor": "Garmin",
+        "status": "EM_PRODUCAO",
+        "data": "2026-05-08T21:26:30.374Z"
+      }
+    ],
+    "testes": [
+      {
+        "tipo": "ELETRICO",
+        "resultado": "APROVADO",
+        "data": "2026-05-08T21:26:30.389Z"
+      },
+      {
+        "tipo": "HIDRAULICO",
+        "resultado": "APROVADO",
+        "data": "2026-05-08T21:26:30.390Z"
+      },
+      {
+        "tipo": "AERODINAMICO",
+        "resultado": "REPROVADO",
+        "data": "2026-05-08T21:26:30.391Z"
+      }
+    ]
+  }
+}

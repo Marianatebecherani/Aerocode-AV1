@@ -1,0 +1,23 @@
+{
+  "id": "7",
+  "nome": "Configuração de Software",
+  "prazoConclusao": "2026-07-15T18:00:00.000Z",
+  "prioridade": 3,
+  "statusTracker": {
+    "atual": {
+      "status": "PENDENTE",
+      "data": "2026-05-08T21:26:30.385Z"
+    },
+    "historico": [
+      {
+        "status": "PENDENTE",
+        "data": "2026-05-08T21:26:30.385Z"
+      }
+    ]
+  },
+  "aeronaveCodigo": "AER-0002",
+  "funcionariosIds": [
+    "7",
+    "12"
+  ]
+}

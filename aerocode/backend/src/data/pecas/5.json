@@ -1,0 +1,19 @@
+{
+  "id": "5",
+  "nome": "Sistema de Navegação",
+  "tipo": "IMPORTADA",
+  "fornecedor": "Garmin",
+  "aeronaveCodigo": "AER-0001",
+  "statusTracker": {
+    "atual": {
+      "status": "EM_PRODUCAO",
+      "data": "2026-05-08T21:26:30.374Z"
+    },
+    "historico": [
+      {
+        "status": "EM_PRODUCAO",
+        "data": "2026-05-08T21:26:30.374Z"
+      }
+    ]
+  }
+}
