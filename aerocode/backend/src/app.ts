@@ -5,6 +5,7 @@ import { authRoutes } from "./modules/auth/auth.routes";
 import { etapaRoutes } from "./modules/etapa/etapa.routes";
 import { funcionarioRoutes } from "./modules/funcionario/funcionario.routes";
 import { pecaRoutes } from "./modules/peca/peca.routes";
+import { testeRoutes } from "./modules/teste/teste.routes";
 
 export const app = express();
 
@@ -39,3 +40,4 @@ app.use("/pecas", pecaRoutes);
 app.use("/etapas", etapaRoutes);
 app.use("/funcionarios", funcionarioRoutes);
 app.use("/auth", authRoutes);
+app.use("/testes", testeRoutes);
