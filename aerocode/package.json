@@ -6,7 +6,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "ts-node src/app.ts",
     "start:backend": "ts-node backend/src/server.ts",
-    "dev:backend": "tsx watch backend/src/server.ts"
+    "dev:backend": "tsx watch backend/src/server.ts",
+    "seed:backend": "ts-node backend/src/seeds/seed.ts"
   },
   "keywords": [],
   "author": "",
