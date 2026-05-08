@@ -1,4 +1,4 @@
-import { StatusTracker } from "../../shared/status-tracker";
+import { StatusTracker } from "../../shared/tracker";
 import {
     criarStatusTrackerEtapa,
     StatusEtapa,
@@ -10,7 +10,7 @@ export type CriarEtapaDTO = {
     nome: string;
     prazoConclusao: string;
     prioridade: number;
-    aeronaveId: string;
+    aeronaveCodigo: string;
     funcionariosIds?: string[];
 };
 
@@ -18,8 +18,25 @@ export type AtualizarEtapaDTO = {
     nome?: string;
     prazoConclusao?: string;
     prioridade?: number;
-    aeronaveId?: string;
+    aeronaveCodigo?: string;
     funcionariosIds?: string[];
+};
+
+export type ListarEtapasDTO = {
+    aeronaveCodigo?: string;
+    nome?: string;
+    prazoInicio?: string;
+    prazoFim?: string;
+    status?: string;
+    page?: string;
+    limit?: string;
+};
+
+export type PaginacaoResponseDTO = {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
 };
 
 export type EtapaResponseDTO = {
@@ -28,8 +45,13 @@ export type EtapaResponseDTO = {
     prazoConclusao: string;
     prioridade: number;
     statusTracker: StatusTrackerEtapaDTO;
-    aeronaveId: string;
+    aeronaveCodigo: string;
     funcionariosIds: string[];
+};
+
+export type ListarEtapasResponseDTO = {
+    dados: EtapaResponseDTO[];
+    paginacao: PaginacaoResponseDTO;
 };
 
 export type EtapaProps = {
@@ -37,7 +59,7 @@ export type EtapaProps = {
     nome: string;
     prazoConclusao: string;
     prioridade: number;
-    aeronaveId: string;
+    aeronaveCodigo: string;
     funcionariosIds?: string[];
     statusTracker?: StatusTracker<StatusEtapa> | StatusTrackerEtapaDTO;
 };
@@ -48,19 +70,19 @@ export class Etapa {
     prazoConclusao: string;
     prioridade: number;
     statusTracker: StatusTracker<StatusEtapa>;
-    aeronaveId: string;
+    aeronaveCodigo: string;
     funcionariosIds: string[];
 
     constructor(props: EtapaProps) {
         Etapa.validarId(props.id);
         Etapa.validarNome(props.nome);
-        Etapa.validarAeronaveId(props.aeronaveId);
+        Etapa.validarAeronaveCodigo(props.aeronaveCodigo);
 
         this.id = props.id.trim();
         this.nome = props.nome.trim();
         this.prazoConclusao = Etapa.normalizarPrazoConclusao(props.prazoConclusao);
         this.prioridade = Etapa.normalizarPrioridade(props.prioridade);
-        this.aeronaveId = props.aeronaveId.trim();
+        this.aeronaveCodigo = props.aeronaveCodigo.trim();
         this.funcionariosIds = Etapa.normalizarFuncionariosIds(props.funcionariosIds ?? []);
         this.statusTracker = Etapa.criarStatusTracker(props);
     }
@@ -108,7 +130,7 @@ export class Etapa {
             prazoConclusao: this.prazoConclusao,
             prioridade: this.prioridade,
             statusTracker: statusTrackerEtapaToDTO(this.statusTracker),
-            aeronaveId: this.aeronaveId,
+            aeronaveCodigo: this.aeronaveCodigo,
             funcionariosIds: [...this.funcionariosIds]
         };
     }
@@ -133,8 +155,8 @@ export class Etapa {
         }
     }
 
-    private static validarAeronaveId(aeronaveId: string): void {
-        if (!aeronaveId || aeronaveId.trim().length === 0) {
+    private static validarAeronaveCodigo(aeronaveCodigo: string): void {
+        if (!aeronaveCodigo || aeronaveCodigo.trim().length === 0) {
             throw new Error("Aeronave da etapa e obrigatoria.");
         }
     }

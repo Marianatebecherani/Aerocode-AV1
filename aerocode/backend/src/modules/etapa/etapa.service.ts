@@ -1,4 +1,12 @@
-import { AtualizarEtapaDTO, CriarEtapaDTO, Etapa, EtapaResponseDTO } from "./etapa.entity";
+import {
+    AtualizarEtapaDTO,
+    CriarEtapaDTO,
+    Etapa,
+    EtapaResponseDTO,
+    ListarEtapasDTO,
+    ListarEtapasResponseDTO
+} from "./etapa.entity";
+import { StatusEtapa } from "./etapa-status";
 import { EtapaRepository } from "./etapa.repository";
 
 export class EtapaService {
@@ -15,7 +23,7 @@ export class EtapaService {
             nome: dto.nome,
             prazoConclusao: dto.prazoConclusao,
             prioridade: dto.prioridade,
-            aeronaveId: dto.aeronaveId,
+            aeronaveCodigo: dto.aeronaveCodigo,
             ...(dto.funcionariosIds ? { funcionariosIds: dto.funcionariosIds } : {})
         });
 
@@ -23,9 +31,45 @@ export class EtapaService {
         return etapaCriada.toResponse();
     }
 
-    async listar(): Promise<EtapaResponseDTO[]> {
+    async listar(filtros: ListarEtapasDTO = {}): Promise<ListarEtapasResponseDTO> {
+        const aeronaveCodigo = filtros.aeronaveCodigo?.trim();
+        const nome = filtros.nome?.trim().toLowerCase();
+        const status = this.normalizarStatusFiltro(filtros.status);
+        const prazoInicio = this.normalizarDataFiltro(filtros.prazoInicio, "prazoInicio");
+        const prazoFim = this.normalizarDataFiltro(filtros.prazoFim, "prazoFim");
+        const page = this.normalizarInteiroPositivo(filtros.page, 1, "page");
+        const limit = this.normalizarInteiroPositivo(filtros.limit, 10, "limit");
+
+        if (prazoInicio && prazoFim && prazoInicio.getTime() > prazoFim.getTime()) {
+            throw new Error("prazoInicio deve ser menor ou igual a prazoFim.");
+        }
+
         const etapas = await this.etapaRepository.listar();
-        return etapas.map((etapa) => etapa.toResponse());
+        const etapasFiltradas = etapas.filter((etapa) => {
+            const prazoConclusao = new Date(etapa.prazoConclusao);
+            const atendeAeronave = !aeronaveCodigo || etapa.aeronaveCodigo === aeronaveCodigo;
+            const atendeNome = !nome || etapa.nome.toLowerCase().includes(nome);
+            const atendeStatus = !status || etapa.statusTracker.atual?.status === status;
+            const atendePrazoInicio = !prazoInicio || prazoConclusao.getTime() >= prazoInicio.getTime();
+            const atendePrazoFim = !prazoFim || prazoConclusao.getTime() <= prazoFim.getTime();
+
+            return atendeAeronave && atendeNome && atendeStatus && atendePrazoInicio && atendePrazoFim;
+        });
+
+        const total = etapasFiltradas.length;
+        const totalPages = Math.ceil(total / limit);
+        const inicio = (page - 1) * limit;
+        const dados = etapasFiltradas.slice(inicio, inicio + limit).map((etapa) => etapa.toResponse());
+
+        return {
+            dados,
+            paginacao: {
+                total,
+                page,
+                limit,
+                totalPages
+            }
+        };
     }
 
     async buscarPorId(id: string): Promise<EtapaResponseDTO | null> {
@@ -44,7 +88,7 @@ export class EtapaService {
             nome: dto.nome ?? etapaAtual.nome,
             prazoConclusao: dto.prazoConclusao ?? etapaAtual.prazoConclusao,
             prioridade: dto.prioridade ?? etapaAtual.prioridade,
-            aeronaveId: dto.aeronaveId ?? etapaAtual.aeronaveId,
+            aeronaveCodigo: dto.aeronaveCodigo ?? etapaAtual.aeronaveCodigo,
             funcionariosIds: dto.funcionariosIds ?? etapaAtual.funcionariosIds,
             statusTracker: etapaAtual.statusTracker
         });
@@ -99,5 +143,44 @@ export class EtapaService {
         etapa.finalizar();
         const resultado = await this.etapaRepository.atualizar(id, etapa);
         return resultado ? resultado.toResponse() : null;
+    }
+
+    private normalizarStatusFiltro(status?: string): StatusEtapa | undefined {
+        if (!status || status.trim().length === 0) {
+            return undefined;
+        }
+
+        const statusNormalizado = status.trim().toUpperCase() as StatusEtapa;
+        if (!Object.values(StatusEtapa).includes(statusNormalizado)) {
+            throw new Error("Status da etapa invalido.");
+        }
+
+        return statusNormalizado;
+    }
+
+    private normalizarDataFiltro(valor: string | undefined, campo: string): Date | undefined {
+        if (!valor || valor.trim().length === 0) {
+            return undefined;
+        }
+
+        const data = new Date(valor.trim());
+        if (Number.isNaN(data.getTime())) {
+            throw new Error(`Parametro ${campo} deve ser uma data valida.`);
+        }
+
+        return data;
+    }
+
+    private normalizarInteiroPositivo(valor: string | undefined, padrao: number, campo: string): number {
+        if (!valor || valor.trim().length === 0) {
+            return padrao;
+        }
+
+        const numero = Number(valor);
+        if (!Number.isInteger(numero) || numero < 1) {
+            throw new Error(`Parametro ${campo} deve ser um numero inteiro positivo.`);
+        }
+
+        return numero;
     }
 }

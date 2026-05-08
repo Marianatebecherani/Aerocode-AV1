@@ -1,4 +1,4 @@
-import { AtualizarEtapaDTO, CriarEtapaDTO } from "./etapa.entity";
+import { AtualizarEtapaDTO, CriarEtapaDTO, ListarEtapasDTO } from "./etapa.entity";
 import { EtapaService } from "./etapa.service";
 
 export class EtapaController {
@@ -8,8 +8,8 @@ export class EtapaController {
         return this.etapaService.criar(dto);
     }
 
-    async listar() {
-        return this.etapaService.listar();
+    async listar(filtros: ListarEtapasDTO) {
+        return this.etapaService.listar(filtros);
     }
 
     async buscarPorId(id: string) {

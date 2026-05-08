@@ -53,19 +53,111 @@ etapaRoutes.post("/", async (req, res) => {
  *     summary: Lista todas as etapas cadastradas.
  *     tags:
  *       - Etapas
+ *     parameters:
+ *       - in: query
+ *         name: aeronaveCodigo
+ *         required: false
+ *         schema:
+ *           type: string
+ *         description: Filtra etapas pelo codigo da aeronave.
+ *         example: AER-0001
+ *       - in: query
+ *         name: nome
+ *         required: false
+ *         schema:
+ *           type: string
+ *         description: Busca por termo no nome da etapa.
+ *         example: montagem
+ *       - in: query
+ *         name: prazoInicio
+ *         required: false
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: Data inicial do intervalo de prazo de conclusao.
+ *         example: "2026-06-01"
+ *       - in: query
+ *         name: prazoFim
+ *         required: false
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: Data final do intervalo de prazo de conclusao.
+ *         example: "2026-06-30"
+ *       - in: query
+ *         name: status
+ *         required: false
+ *         schema:
+ *           type: string
+ *           enum: [PENDENTE, EM_ANDAMENTO, CONCLUIDA]
+ *         description: Filtra etapas pelo status atual.
+ *         example: pendente
+ *       - in: query
+ *         name: page
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *         description: Pagina desejada.
+ *       - in: query
+ *         name: limit
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 10
+ *         description: Quantidade de itens por pagina.
  *     responses:
  *       200:
- *         description: Lista de etapas.
+ *         description: Lista paginada de etapas.
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Etapa'
+ *               type: object
+ *               properties:
+ *                 dados:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Etapa'
+ *                 paginacao:
+ *                   type: object
+ *                   properties:
+ *                     total:
+ *                       type: integer
+ *                       example: 25
+ *                     page:
+ *                       type: integer
+ *                       example: 1
+ *                     limit:
+ *                       type: integer
+ *                       example: 10
+ *                     totalPages:
+ *                       type: integer
+ *                       example: 3
+ *       400:
+ *         description: Filtros ou parametros de paginacao invalidos.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
-etapaRoutes.get("/", async (_req, res) => {
-    const etapas = await etapaController.listar();
-    res.json(etapas);
+etapaRoutes.get("/", async (req, res) => {
+    try {
+        const etapas = await etapaController.listar({
+            ...(typeof req.query.aeronaveCodigo === "string" ? { aeronaveCodigo: req.query.aeronaveCodigo } : {}),
+            ...(typeof req.query.nome === "string" ? { nome: req.query.nome } : {}),
+            ...(typeof req.query.prazoInicio === "string" ? { prazoInicio: req.query.prazoInicio } : {}),
+            ...(typeof req.query.prazoFim === "string" ? { prazoFim: req.query.prazoFim } : {}),
+            ...(typeof req.query.status === "string" ? { status: req.query.status } : {}),
+            ...(typeof req.query.page === "string" ? { page: req.query.page } : {}),
+            ...(typeof req.query.limit === "string" ? { limit: req.query.limit } : {})
+        });
+        res.json(etapas);
+    } catch (error) {
+        const message = error instanceof Error ? error.message : "Erro ao listar etapas.";
+        res.status(400).json({ message });
+    }
 });
 
 /**
