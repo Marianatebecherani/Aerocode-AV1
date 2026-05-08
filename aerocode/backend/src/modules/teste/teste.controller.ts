@@ -1,4 +1,4 @@
-import { AtualizarTesteDTO, CriarTesteDTO } from "./teste.entity";
+import { AtualizarTesteDTO, CriarTesteDTO, ListarTestesDTO } from "./teste.entity";
 import { TesteService } from "./teste.service";
 
 export class TesteController {
@@ -8,8 +8,8 @@ export class TesteController {
         return this.testeService.criar(dto);
     }
 
-    async listar() {
-        return this.testeService.listar();
+    async listar(filtros: ListarTestesDTO) {
+        return this.testeService.listar(filtros);
     }
 
     async buscarPorId(id: string) {
@@ -22,5 +22,13 @@ export class TesteController {
 
     async deletar(id: string) {
         return this.testeService.deletar(id);
+    }
+
+    async aprovar(id: string) {
+        return this.testeService.aprovar(id);
+    }
+
+    async reprovar(id: string) {
+        return this.testeService.reprovar(id);
     }
 }
