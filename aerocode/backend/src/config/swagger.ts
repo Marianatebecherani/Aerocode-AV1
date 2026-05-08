@@ -366,6 +366,56 @@ const swaggerDefinition = {
                     }
                 }
             },
+            Teste: {
+                type: "object",
+                properties: {
+                    id: {
+                        type: "string",
+                        example: "1"
+                    },
+                    tipo: {
+                        type: "string",
+                        enum: ["ELETRICO", "HIDRAULICO", "AERODINAMICO"],
+                        example: "ELETRICO"
+                    },
+                    resultado: {
+                        type: "string",
+                        enum: ["APROVADO", "REPROVADO"],
+                        example: "APROVADO"
+                    }
+                }
+            },
+            CriarTeste: {
+                type: "object",
+                required: ["tipo", "resultado"],
+                properties: {
+                    tipo: {
+                        type: "string",
+                        enum: ["ELETRICO", "HIDRAULICO", "AERODINAMICO"],
+                        example: "eletrico"
+                    },
+                    resultado: {
+                        type: "string",
+                        enum: ["APROVADO", "REPROVADO"],
+                        example: "aprovado"
+                    }
+                }
+            },
+            AtualizarTeste: {
+                type: "object",
+                properties: {
+                    tipo: {
+                        type: "string",
+                        enum: ["ELETRICO", "HIDRAULICO", "AERODINAMICO"],
+                        example: "hidraulico"
+                    },
+                    resultado: {
+                        type: "string",
+                        enum: ["APROVADO", "REPROVADO"],
+                        example: "reprovado"
+                    }
+                }
+            },
             ErrorResponse: {
                 type: "object",
                 properties: {
