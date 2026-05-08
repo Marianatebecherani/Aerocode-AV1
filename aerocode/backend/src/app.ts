@@ -1,6 +1,7 @@
 import express = require("express");
 import { Request, Response } from "express";
 import { swaggerSpec, swaggerUi } from "./config/swagger";
+import { aeronaveRoutes } from "./modules/aeronave/aeronave.routes";
 import { authRoutes } from "./modules/auth/auth.routes";
 import { etapaRoutes } from "./modules/etapa/etapa.routes";
 import { funcionarioRoutes } from "./modules/funcionario/funcionario.routes";
@@ -20,6 +21,9 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
  *     summary: Verifica se a API esta online.
  *     tags:
  *       - Health
+ *     servers:
+ *       - url: http://localhost:3000
+ *         description: Servidor local
  *     responses:
  *       200:
  *         description: API online.
@@ -36,8 +40,9 @@ app.get("/health", (_req: Request, res: Response) => {
     res.json({ status: "ok" });
 });
 
-app.use("/pecas", pecaRoutes);
-app.use("/etapas", etapaRoutes);
-app.use("/funcionarios", funcionarioRoutes);
-app.use("/auth", authRoutes);
-app.use("/testes", testeRoutes);
+app.use("/api/v1/pecas", pecaRoutes);
+app.use("/api/v1/etapas", etapaRoutes);
+app.use("/api/v1/funcionarios", funcionarioRoutes);
+app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/testes", testeRoutes);
+app.use("/api/v1/aeronaves", aeronaveRoutes);
