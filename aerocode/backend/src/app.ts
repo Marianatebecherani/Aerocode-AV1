@@ -1,6 +1,7 @@
 import express = require("express");
 import { Request, Response } from "express";
 import { swaggerSpec, swaggerUi } from "./config/swagger";
+import { authRoutes } from "./modules/auth/auth.routes";
 import { etapaRoutes } from "./modules/etapa/etapa.routes";
 import { funcionarioRoutes } from "./modules/funcionario/funcionario.routes";
 import { pecaRoutes } from "./modules/peca/peca.routes";
@@ -37,3 +38,4 @@ app.get("/health", (_req: Request, res: Response) => {
 app.use("/pecas", pecaRoutes);
 app.use("/etapas", etapaRoutes);
 app.use("/funcionarios", funcionarioRoutes);
+app.use("/auth", authRoutes);
