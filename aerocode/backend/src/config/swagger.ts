@@ -11,12 +11,101 @@ const swaggerDefinition = {
     },
     servers: [
         {
-            url: "http://localhost:3000",
-            description: "Servidor local"
+            url: "http://localhost:3000/api/v1",
+            description: "Servidor local v1"
         }
     ],
     components: {
         schemas: {
+            Aeronave: {
+                type: "object",
+                properties: {
+                    codigo: {
+                        type: "string",
+                        example: "AER-0001"
+                    },
+                    modelo: {
+                        type: "string",
+                        example: "Boeing 737"
+                    },
+                    tipo: {
+                        type: "string",
+                        enum: ["COMERCIAL", "MILITAR"],
+                        example: "COMERCIAL"
+                    },
+                    capacidade: {
+                        type: "integer",
+                        example: 180
+                    },
+                    alcance: {
+                        type: "integer",
+                        example: 5600
+                    },
+                    pecas: {
+                        type: "array",
+                        items: {
+                            $ref: "#/components/schemas/Peca"
+                        }
+                    },
+                    etapas: {
+                        type: "array",
+                        items: {
+                            $ref: "#/components/schemas/Etapa"
+                        }
+                    },
+                    testes: {
+                        type: "array",
+                        items: {
+                            $ref: "#/components/schemas/Teste"
+                        }
+                    }
+                }
+            },
+            CriarAeronave: {
+                type: "object",
+                required: ["modelo", "tipo", "capacidade", "alcance"],
+                properties: {
+                    modelo: {
+                        type: "string",
+                        example: "Boeing 737"
+                    },
+                    tipo: {
+                        type: "string",
+                        enum: ["COMERCIAL", "MILITAR"],
+                        example: "comercial"
+                    },
+                    capacidade: {
+                        type: "integer",
+                        example: 180
+                    },
+                    alcance: {
+                        type: "integer",
+                        example: 5600
+                    }
+                }
+            },
+            AtualizarAeronave: {
+                type: "object",
+                properties: {
+                    modelo: {
+                        type: "string",
+                        example: "Boeing 737 MAX"
+                    },
+                    tipo: {
+                        type: "string",
+                        enum: ["COMERCIAL", "MILITAR"],
+                        example: "COMERCIAL"
+                    },
+                    capacidade: {
+                        type: "integer",
+                        example: 190
+                    },
+                    alcance: {
+                        type: "integer",
+                        example: 6100
+                    }
+                }
+            },
             Peca: {
                 type: "object",
                 properties: {
@@ -36,6 +125,10 @@ const swaggerDefinition = {
                     fornecedor: {
                         type: "string",
                         example: "Embraer"
+                    },
+                    aeronaveCodigo: {
+                        type: "string",
+                        example: "AER-0001"
                     },
                     statusTracker: {
                         type: "object",
@@ -80,7 +173,7 @@ const swaggerDefinition = {
             },
             CriarPeca: {
                 type: "object",
-                required: ["nome", "tipo", "fornecedor"],
+                required: ["nome", "tipo", "fornecedor", "aeronaveCodigo"],
                 properties: {
                     nome: {
                         type: "string",
@@ -94,6 +187,10 @@ const swaggerDefinition = {
                     fornecedor: {
                         type: "string",
                         example: "Embraer"
+                    },
+                    aeronaveCodigo: {
+                        type: "string",
+                        example: "AER-0001"
                     }
                 }
             },
@@ -112,6 +209,10 @@ const swaggerDefinition = {
                     fornecedor: {
                         type: "string",
                         example: "AeroParts"
+                    },
+                    aeronaveCodigo: {
+                        type: "string",
+                        example: "AER-0001"
                     }
                 }
             },
@@ -174,9 +275,9 @@ const swaggerDefinition = {
                             }
                         }
                     },
-                    aeronaveId: {
+                    aeronaveCodigo: {
                         type: "string",
-                        example: "AER-001"
+                        example: "AER-0001"
                     },
                     funcionariosIds: {
                         type: "array",
@@ -189,7 +290,7 @@ const swaggerDefinition = {
             },
             CriarEtapa: {
                 type: "object",
-                required: ["nome", "prazoConclusao", "prioridade", "aeronaveId"],
+                required: ["nome", "prazoConclusao", "prioridade", "aeronaveCodigo"],
                 properties: {
                     nome: {
                         type: "string",
@@ -204,9 +305,9 @@ const swaggerDefinition = {
                         type: "integer",
                         example: 1
                     },
-                    aeronaveId: {
+                    aeronaveCodigo: {
                         type: "string",
-                        example: "AER-001"
+                        example: "AER-0001"
                     },
                     funcionariosIds: {
                         type: "array",
@@ -233,9 +334,9 @@ const swaggerDefinition = {
                         type: "integer",
                         example: 2
                     },
-                    aeronaveId: {
+                    aeronaveCodigo: {
                         type: "string",
-                        example: "AER-001"
+                        example: "AER-0001"
                     },
                     funcionariosIds: {
                         type: "array",
@@ -378,16 +479,54 @@ const swaggerDefinition = {
                         enum: ["ELETRICO", "HIDRAULICO", "AERODINAMICO"],
                         example: "ELETRICO"
                     },
-                    resultado: {
+                    aeronaveCodigo: {
                         type: "string",
-                        enum: ["APROVADO", "REPROVADO"],
-                        example: "APROVADO"
+                        example: "AER-0001"
+                    },
+                    resultadoTracker: {
+                        type: "object",
+                        properties: {
+                            atual: {
+                                type: "object",
+                                nullable: true,
+                                properties: {
+                                    resultado: {
+                                        type: "string",
+                                        enum: ["APROVADO", "REPROVADO"],
+                                        example: "APROVADO"
+                                    },
+                                    data: {
+                                        type: "string",
+                                        format: "date-time",
+                                        example: "2026-05-08T01:06:48.436Z"
+                                    }
+                                }
+                            },
+                            historico: {
+                                type: "array",
+                                items: {
+                                    type: "object",
+                                    properties: {
+                                        resultado: {
+                                            type: "string",
+                                            enum: ["APROVADO", "REPROVADO"],
+                                            example: "APROVADO"
+                                        },
+                                        data: {
+                                            type: "string",
+                                            format: "date-time",
+                                            example: "2026-05-08T01:06:48.436Z"
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             },
             CriarTeste: {
                 type: "object",
-                required: ["tipo", "resultado"],
+                required: ["tipo", "resultado", "aeronaveCodigo"],
                 properties: {
                     tipo: {
                         type: "string",
@@ -398,6 +537,10 @@ const swaggerDefinition = {
                         type: "string",
                         enum: ["APROVADO", "REPROVADO"],
                         example: "aprovado"
+                    },
+                    aeronaveCodigo: {
+                        type: "string",
+                        example: "AER-0001"
                     }
                 }
             },
@@ -409,10 +552,9 @@ const swaggerDefinition = {
                         enum: ["ELETRICO", "HIDRAULICO", "AERODINAMICO"],
                         example: "hidraulico"
                     },
-                    resultado: {
+                    aeronaveCodigo: {
                         type: "string",
-                        enum: ["APROVADO", "REPROVADO"],
-                        example: "reprovado"
+                        example: "AER-0001"
                     }
                 }
             },
