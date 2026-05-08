@@ -3,13 +3,8 @@ export enum TipoAeronave {
     MILITAR = "MILITAR"
 }
 
+export { StatusEtapa } from "../modules/etapa";
 export { StatusPeca, TipoPeca } from "../modules/peca";
-
-export enum StatusEtapa {
-    PENDENTE = "PENDENTE",
-    ANDAMENTO = "EM_ANDAMENTO",
-    CONCLUIDA = "CONCLUIDA"
-}
 
 export enum NivelPermissao {
     ADMINISTRADOR = "ADMINISTRADOR",
