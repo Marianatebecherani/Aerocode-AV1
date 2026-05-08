@@ -1,8 +1,4 @@
-export enum TipoAeronave {
-    COMERCIAL = "COMERCIAL",
-    MILITAR = "MILITAR"
-}
-
+export { TipoAeronave } from "../modules/aeronave";
 export { StatusEtapa } from "../modules/etapa";
 export { NivelPermissao } from "../modules/funcionario";
 export { StatusPeca, TipoPeca } from "../modules/peca";
