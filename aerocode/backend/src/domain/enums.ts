@@ -4,13 +4,8 @@ export enum TipoAeronave {
 }
 
 export { StatusEtapa } from "../modules/etapa";
+export { NivelPermissao } from "../modules/funcionario";
 export { StatusPeca, TipoPeca } from "../modules/peca";
-
-export enum NivelPermissao {
-    ADMINISTRADOR = "ADMINISTRADOR",
-    ENGENHEIRO = "ENGENHEIRO",
-    OPERADOR = "OPERADOR"
-}
 
 export enum TipoTeste {
     ELETRICO = "ELETRICO",
