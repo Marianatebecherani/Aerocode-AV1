@@ -1,4 +1,4 @@
-import { StatusTracker } from "../../shared/status-tracker";
+import { StatusTracker } from "../../shared/tracker";
 import {
     criarStatusTrackerPeca,
     StatusPeca,
@@ -15,15 +15,18 @@ export type CriarPecaDTO = {
     nome: string;
     tipo: TipoPeca | string;
     fornecedor: string;
+    aeronaveCodigo: string;
 };
 
 export type AtualizarPecaDTO = {
     nome?: string;
     tipo?: TipoPeca | string;
     fornecedor?: string;
+    aeronaveCodigo?: string;
 };
 
 export type ListarPecasDTO = {
+    aeronaveCodigo?: string;
     tipo?: string;
     status?: string;
     termo?: string;
@@ -43,6 +46,7 @@ export type PecaResponseDTO = {
     nome: string;
     tipo: TipoPeca;
     fornecedor: string;
+    aeronaveCodigo: string;
     statusTracker: StatusTrackerPecaDTO;
 };
 
@@ -56,6 +60,7 @@ export type PecaProps = {
     nome: string;
     tipo: TipoPeca | string;
     fornecedor: string;
+    aeronaveCodigo: string;
     statusTracker?: StatusTracker<StatusPeca> | StatusTrackerPecaDTO;
 };
 
@@ -64,17 +69,20 @@ export class Peca {
     nome: string;
     tipo: TipoPeca;
     fornecedor: string;
+    aeronaveCodigo: string;
     statusTracker: StatusTracker<StatusPeca>;
 
     constructor(props: PecaProps) {
         Peca.validarId(props.id);
         Peca.validarNome(props.nome);
         Peca.validarFornecedor(props.fornecedor);
+        Peca.validarAeronaveCodigo(props.aeronaveCodigo);
 
         this.id = props.id.trim();
         this.nome = props.nome.trim();
         this.tipo = Peca.normalizarTipo(props.tipo);
         this.fornecedor = props.fornecedor.trim();
+        this.aeronaveCodigo = props.aeronaveCodigo.trim();
         this.statusTracker = Peca.criarStatusTracker(props);
     }
 
@@ -96,6 +104,7 @@ export class Peca {
             nome: this.nome,
             tipo: this.tipo,
             fornecedor: this.fornecedor,
+            aeronaveCodigo: this.aeronaveCodigo,
             statusTracker: statusTrackerPecaToDTO(this.statusTracker)
         };
     }
@@ -123,6 +132,12 @@ export class Peca {
     private static validarFornecedor(fornecedor: string): void {
         if (!fornecedor || fornecedor.trim().length === 0) {
             throw new Error("Fornecedor da peca e obrigatorio.");
+        }
+    }
+
+    private static validarAeronaveCodigo(aeronaveCodigo: string): void {
+        if (!aeronaveCodigo || aeronaveCodigo.trim().length === 0) {
+            throw new Error("Codigo da aeronave da peca e obrigatorio.");
         }
     }
 

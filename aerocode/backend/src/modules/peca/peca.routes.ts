@@ -55,6 +55,13 @@ pecaRoutes.post("/", async (req, res) => {
  *       - Pecas
  *     parameters:
  *       - in: query
+ *         name: aeronaveCodigo
+ *         required: false
+ *         schema:
+ *           type: string
+ *         description: Filtra pecas pelo codigo da aeronave.
+ *         example: AER-0001
+ *       - in: query
  *         name: tipo
  *         required: false
  *         schema:
@@ -130,6 +137,7 @@ pecaRoutes.post("/", async (req, res) => {
 pecaRoutes.get("/", async (req, res) => {
     try {
         const pecas = await pecaController.listar({
+            ...(typeof req.query.aeronaveCodigo === "string" ? { aeronaveCodigo: req.query.aeronaveCodigo } : {}),
             ...(typeof req.query.tipo === "string" ? { tipo: req.query.tipo } : {}),
             ...(typeof req.query.status === "string" ? { status: req.query.status } : {}),
             ...(typeof req.query.termo === "string" ? { termo: req.query.termo } : {}),

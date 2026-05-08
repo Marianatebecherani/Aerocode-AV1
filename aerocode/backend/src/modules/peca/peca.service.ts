@@ -23,7 +23,8 @@ export class PecaService {
             id: await this.pecaRepository.gerarProximoId(),
             nome: dto.nome,
             tipo: dto.tipo,
-            fornecedor: dto.fornecedor
+            fornecedor: dto.fornecedor,
+            aeronaveCodigo: dto.aeronaveCodigo
         });
         const pecaCriada = await this.pecaRepository.criar(peca);
         return pecaCriada.toResponse();
@@ -32,6 +33,7 @@ export class PecaService {
     async listar(filtros: ListarPecasDTO = {}): Promise<ListarPecasResponseDTO> {
         const tipo = this.normalizarTipoFiltro(filtros.tipo);
         const status = this.normalizarStatusFiltro(filtros.status);
+        const aeronaveCodigo = filtros.aeronaveCodigo?.trim();
         const termo = filtros.termo?.trim().toLowerCase();
         const page = this.normalizarInteiroPositivo(filtros.page, 1, "page");
         const limit = this.normalizarInteiroPositivo(filtros.limit, 10, "limit");
@@ -40,12 +42,13 @@ export class PecaService {
         const pecasFiltradas = pecas.filter((peca) => {
             const atendeTipo = !tipo || peca.tipo === tipo;
             const atendeStatus = !status || peca.statusTracker.atual?.status === status;
+            const atendeAeronave = !aeronaveCodigo || peca.aeronaveCodigo === aeronaveCodigo;
             const atendeTermo =
                 !termo ||
                 peca.nome.toLowerCase().includes(termo) ||
                 peca.fornecedor.toLowerCase().includes(termo);
 
-            return atendeTipo && atendeStatus && atendeTermo;
+            return atendeTipo && atendeStatus && atendeAeronave && atendeTermo;
         });
 
         const total = pecasFiltradas.length;
@@ -80,6 +83,7 @@ export class PecaService {
             nome: dto.nome ?? pecaAtual.nome,
             tipo: dto.tipo ?? pecaAtual.tipo,
             fornecedor: dto.fornecedor ?? pecaAtual.fornecedor,
+            aeronaveCodigo: dto.aeronaveCodigo ?? pecaAtual.aeronaveCodigo,
             statusTracker: pecaAtual.statusTracker
         });
 

@@ -1,4 +1,4 @@
-import { StatusInfo, StatusRegistro, StatusTracker } from "../../shared/status-tracker";
+import { StatusInfo, StatusRegistro, StatusTracker } from "../../shared/tracker";
 
 export enum StatusPeca {
     EM_PRODUCAO = "EM_PRODUCAO",
