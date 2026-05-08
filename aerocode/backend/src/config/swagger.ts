@@ -558,6 +558,79 @@ const swaggerDefinition = {
                     }
                 }
             },
+            Relatorio: {
+                type: "object",
+                properties: {
+                    id: {
+                        type: "string",
+                        example: "1"
+                    },
+                    aeronaveCodigo: {
+                        type: "string",
+                        example: "AER-0001"
+                    },
+                    dataEmissao: {
+                        type: "string",
+                        format: "date-time",
+                        example: "2026-05-08T12:00:00.000Z"
+                    },
+                    detalhes: {
+                        type: "object",
+                        description: "Snapshot dos detalhes da aeronave no momento da emissao do relatorio.",
+                        properties: {
+                            codigo: {
+                                type: "string",
+                                example: "AER-0001"
+                            },
+                            modelo: {
+                                type: "string",
+                                example: "Boeing 737"
+                            },
+                            tipo: {
+                                type: "string",
+                                enum: ["COMERCIAL", "MILITAR"],
+                                example: "COMERCIAL"
+                            },
+                            capacidade: {
+                                type: "integer",
+                                example: 180
+                            },
+                            alcance: {
+                                type: "integer",
+                                example: 5600
+                            },
+                            etapas: {
+                                type: "array",
+                                items: {
+                                    type: "object"
+                                }
+                            },
+                            pecas: {
+                                type: "array",
+                                items: {
+                                    type: "object"
+                                }
+                            },
+                            testes: {
+                                type: "array",
+                                items: {
+                                    type: "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            CriarRelatorio: {
+                type: "object",
+                required: ["aeronaveCodigo"],
+                properties: {
+                    aeronaveCodigo: {
+                        type: "string",
+                        example: "AER-0001"
+                    }
+                }
+            },
             ErrorResponse: {
                 type: "object",
                 properties: {
