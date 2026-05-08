@@ -6,6 +6,7 @@ import { authRoutes } from "./modules/auth/auth.routes";
 import { etapaRoutes } from "./modules/etapa/etapa.routes";
 import { funcionarioRoutes } from "./modules/funcionario/funcionario.routes";
 import { pecaRoutes } from "./modules/peca/peca.routes";
+import { relatorioRoutes } from "./modules/relatorio/relatorio.routes";
 import { testeRoutes } from "./modules/teste/teste.routes";
 
 export const app = express();
@@ -46,3 +47,4 @@ app.use("/api/v1/funcionarios", funcionarioRoutes);
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/testes", testeRoutes);
 app.use("/api/v1/aeronaves", aeronaveRoutes);
+app.use("/api/v1/relatorios", relatorioRoutes);
