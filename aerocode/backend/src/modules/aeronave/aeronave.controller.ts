@@ -16,6 +16,10 @@ export class AeronaveController {
         return this.aeronaveService.buscarPorCodigo(codigo);
     }
 
+    async buscarDetalhesPorCodigo(codigo: string) {
+        return this.aeronaveService.buscarDetalhesPorCodigo(codigo);
+    }
+
     async atualizar(codigo: string, dto: AtualizarAeronaveDTO) {
         return this.aeronaveService.atualizar(codigo, dto);
     }

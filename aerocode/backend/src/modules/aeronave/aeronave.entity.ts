@@ -1,4 +1,5 @@
 import { EtapaResponseDTO } from "../etapa";
+import { NivelPermissao } from "../funcionario";
 import { PecaResponseDTO } from "../peca";
 import { TesteResponseDTO } from "../teste";
 
@@ -30,6 +31,45 @@ export type AeronaveResponseDTO = {
     pecas: PecaResponseDTO[];
     etapas: EtapaResponseDTO[];
     testes: TesteResponseDTO[];
+};
+
+export type AeronaveDetalhesFuncionarioDTO = {
+    nome: string;
+    funcao: NivelPermissao;
+};
+
+export type AeronaveDetalhesEtapaDTO = {
+    nome: string;
+    prazoConclusao: string;
+    prioridade: number;
+    status: string | null;
+    data: string | null;
+    funcionarios: AeronaveDetalhesFuncionarioDTO[];
+};
+
+export type AeronaveDetalhesPecaDTO = {
+    nome: string;
+    tipo: string;
+    fornecedor: string;
+    status: string | null;
+    data: string | null;
+};
+
+export type AeronaveDetalhesTesteDTO = {
+    tipo: string;
+    resultado: string | null;
+    data: string | null;
+};
+
+export type AeronaveDetalhesResponseDTO = {
+    codigo: string;
+    modelo: string;
+    tipo: TipoAeronave;
+    capacidade: number;
+    alcance: number;
+    etapas: AeronaveDetalhesEtapaDTO[];
+    pecas: AeronaveDetalhesPecaDTO[];
+    testes: AeronaveDetalhesTesteDTO[];
 };
 
 export type AeronaveProps = {
