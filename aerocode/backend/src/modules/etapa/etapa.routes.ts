@@ -2,9 +2,11 @@ import { Router } from "express";
 import { EtapaController } from "./etapa.controller";
 import { EtapaRepository } from "./etapa.repository";
 import { EtapaService } from "./etapa.service";
+import { FuncionarioRepository } from "../funcionario/funcionario.repository";
 
 const etapaRepository = new EtapaRepository();
-const etapaService = new EtapaService(etapaRepository);
+const funcionarioRepository = new FuncionarioRepository();
+const etapaService = new EtapaService(etapaRepository, funcionarioRepository);
 const etapaController = new EtapaController(etapaService);
 
 export const etapaRoutes = Router();
@@ -435,6 +437,122 @@ etapaRoutes.patch("/:id/status/finalizar", async (req, res) => {
         res.json(etapa);
     } catch (error) {
         const message = error instanceof Error ? error.message : "Erro ao finalizar etapa.";
+        res.status(400).json({ message });
+    }
+});
+
+/**
+ * @swagger
+ * /etapas/{id}/funcionarios/{funcionarioId}:
+ *   post:
+ *     summary: Associa um funcionario a uma etapa.
+ *     tags:
+ *       - Etapas
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Id da etapa que recebera o funcionario.
+ *         example: "1"
+ *       - in: path
+ *         name: funcionarioId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Id do funcionario que sera associado.
+ *         example: "1"
+ *     responses:
+ *       200:
+ *         description: Funcionario associado com sucesso.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Etapa'
+ *       400:
+ *         description: Funcionario inexistente ou ja associado a etapa.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       404:
+ *         description: Etapa nao encontrada.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+etapaRoutes.post("/:id/funcionarios/:funcionarioId", async (req, res) => {
+    try {
+        const etapa = await etapaController.associarFuncionario(req.params.id, req.params.funcionarioId);
+
+        if (!etapa) {
+            res.status(404).json({ message: "Etapa nao encontrada." });
+            return;
+        }
+
+        res.json(etapa);
+    } catch (error) {
+        const message = error instanceof Error ? error.message : "Erro ao associar funcionario a etapa.";
+        res.status(400).json({ message });
+    }
+});
+
+/**
+ * @swagger
+ * /etapas/{id}/funcionarios/{funcionarioId}:
+ *   delete:
+ *     summary: Remove a associacao de um funcionario com uma etapa.
+ *     tags:
+ *       - Etapas
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Id da etapa que tera o funcionario removido.
+ *         example: "1"
+ *       - in: path
+ *         name: funcionarioId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Id do funcionario que sera desassociado.
+ *         example: "1"
+ *     responses:
+ *       200:
+ *         description: Funcionario desassociado com sucesso.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Etapa'
+ *       400:
+ *         description: Funcionario nao esta associado a etapa.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       404:
+ *         description: Etapa nao encontrada.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+etapaRoutes.delete("/:id/funcionarios/:funcionarioId", async (req, res) => {
+    try {
+        const etapa = await etapaController.desassociarFuncionario(req.params.id, req.params.funcionarioId);
+
+        if (!etapa) {
+            res.status(404).json({ message: "Etapa nao encontrada." });
+            return;
+        }
+
+        res.json(etapa);
+    } catch (error) {
+        const message = error instanceof Error ? error.message : "Erro ao remover funcionario da etapa.";
         res.status(400).json({ message });
     }
 });

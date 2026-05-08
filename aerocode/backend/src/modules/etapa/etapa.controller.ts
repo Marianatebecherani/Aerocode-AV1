@@ -39,4 +39,12 @@ export class EtapaController {
     async finalizar(id: string) {
         return this.etapaService.finalizar(id);
     }
+
+    async associarFuncionario(id: string, funcionarioId: string) {
+        return this.etapaService.associarFuncionario(id, funcionarioId);
+    }
+
+    async desassociarFuncionario(id: string, funcionarioId: string) {
+        return this.etapaService.desassociarFuncionario(id, funcionarioId);
+    }
 }

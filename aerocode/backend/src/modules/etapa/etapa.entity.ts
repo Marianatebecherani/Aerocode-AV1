@@ -123,6 +123,26 @@ export class Etapa {
         this.statusTracker.alterarPara(StatusEtapa.CONCLUIDA);
     }
 
+    associarFuncionario(funcionarioId: string): void {
+        const idNormalizado = Etapa.normalizarFuncionarioId(funcionarioId);
+
+        if (this.funcionariosIds.includes(idNormalizado)) {
+            throw new Error("Funcionario ja esta associado a esta etapa.");
+        }
+
+        this.funcionariosIds.push(idNormalizado);
+    }
+
+    desassociarFuncionario(funcionarioId: string): void {
+        const idNormalizado = Etapa.normalizarFuncionarioId(funcionarioId);
+
+        if (!this.funcionariosIds.includes(idNormalizado)) {
+            throw new Error("Funcionario nao esta associado a esta etapa.");
+        }
+
+        this.funcionariosIds = this.funcionariosIds.filter((id) => id !== idNormalizado);
+    }
+
     toResponse(): EtapaResponseDTO {
         return {
             id: this.id,
@@ -189,14 +209,16 @@ export class Etapa {
             throw new Error("Funcionarios da etapa devem ser uma lista de ids.");
         }
 
-        const idsNormalizados = funcionariosIds.map((id) => {
-            if (!id || id.trim().length === 0) {
-                throw new Error("Id de funcionario invalido.");
-            }
-
-            return id.trim();
-        });
+        const idsNormalizados = funcionariosIds.map((id) => Etapa.normalizarFuncionarioId(id));
 
         return Array.from(new Set(idsNormalizados));
+    }
+
+    private static normalizarFuncionarioId(funcionarioId: string): string {
+        if (!funcionarioId || funcionarioId.trim().length === 0) {
+            throw new Error("Id de funcionario invalido.");
+        }
+
+        return funcionarioId.trim();
     }
 }

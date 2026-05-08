@@ -8,9 +8,13 @@ import {
 } from "./etapa.entity";
 import { StatusEtapa } from "./etapa-status";
 import { EtapaRepository } from "./etapa.repository";
+import { FuncionarioRepository } from "../funcionario/funcionario.repository";
 
 export class EtapaService {
-    constructor(private readonly etapaRepository: EtapaRepository) {}
+    constructor(
+        private readonly etapaRepository: EtapaRepository,
+        private readonly funcionarioRepository: FuncionarioRepository
+    ) {}
 
     async criar(dto: CriarEtapaDTO): Promise<EtapaResponseDTO> {
         const etapaExistente = await this.etapaRepository.buscarPorNome(dto.nome);
@@ -141,6 +145,33 @@ export class EtapaService {
         }
 
         etapa.finalizar();
+        const resultado = await this.etapaRepository.atualizar(id, etapa);
+        return resultado ? resultado.toResponse() : null;
+    }
+
+    async associarFuncionario(id: string, funcionarioId: string): Promise<EtapaResponseDTO | null> {
+        const etapa = await this.etapaRepository.buscarPorId(id);
+        if (!etapa) {
+            return null;
+        }
+
+        const funcionario = await this.funcionarioRepository.buscarPorId(funcionarioId);
+        if (!funcionario) {
+            throw new Error("Funcionario nao encontrado.");
+        }
+
+        etapa.associarFuncionario(funcionario.id);
+        const resultado = await this.etapaRepository.atualizar(id, etapa);
+        return resultado ? resultado.toResponse() : null;
+    }
+
+    async desassociarFuncionario(id: string, funcionarioId: string): Promise<EtapaResponseDTO | null> {
+        const etapa = await this.etapaRepository.buscarPorId(id);
+        if (!etapa) {
+            return null;
+        }
+
+        etapa.desassociarFuncionario(funcionarioId);
         const resultado = await this.etapaRepository.atualizar(id, etapa);
         return resultado ? resultado.toResponse() : null;
     }
