@@ -1,6 +1,7 @@
 import express = require("express");
 import { Request, Response } from "express";
 import { swaggerSpec, swaggerUi } from "./config/swagger";
+import { etapaRoutes } from "./modules/etapa/etapa.routes";
 import { pecaRoutes } from "./modules/peca/peca.routes";
 
 export const app = express();
@@ -33,3 +34,4 @@ app.get("/health", (_req: Request, res: Response) => {
 });
 
 app.use("/pecas", pecaRoutes);
+app.use("/etapas", etapaRoutes);
