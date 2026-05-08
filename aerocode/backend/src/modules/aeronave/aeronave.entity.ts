@@ -22,6 +22,24 @@ export type AtualizarAeronaveDTO = {
     alcance?: number;
 };
 
+export type ListarAeronavesDTO = {
+    modelo?: string;
+    tipo?: string;
+    capacidadeMin?: string;
+    capacidadeMax?: string;
+    alcanceMin?: string;
+    alcanceMax?: string;
+    page?: string;
+    limit?: string;
+};
+
+export type PaginacaoResponseDTO = {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+};
+
 export type AeronaveResponseDTO = {
     codigo: string;
     modelo: string;
@@ -31,6 +49,11 @@ export type AeronaveResponseDTO = {
     pecas: PecaResponseDTO[];
     etapas: EtapaResponseDTO[];
     testes: TesteResponseDTO[];
+};
+
+export type ListarAeronavesResponseDTO = {
+    dados: AeronaveResponseDTO[];
+    paginacao: PaginacaoResponseDTO;
 };
 
 export type AeronaveDetalhesFuncionarioDTO = {

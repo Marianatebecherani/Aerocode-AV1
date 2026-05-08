@@ -1,4 +1,4 @@
-import { AtualizarAeronaveDTO, CriarAeronaveDTO } from "./aeronave.entity";
+import { AtualizarAeronaveDTO, CriarAeronaveDTO, ListarAeronavesDTO } from "./aeronave.entity";
 import { AeronaveService } from "./aeronave.service";
 
 export class AeronaveController {
@@ -8,8 +8,8 @@ export class AeronaveController {
         return this.aeronaveService.criar(dto);
     }
 
-    async listar() {
-        return this.aeronaveService.listar();
+    async listar(filtros: ListarAeronavesDTO) {
+        return this.aeronaveService.listar(filtros);
     }
 
     async buscarPorCodigo(codigo: string) {

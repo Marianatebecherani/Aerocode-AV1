@@ -67,19 +67,121 @@ aeronaveRoutes.post("/", async (req, res) => {
  *     summary: Lista todas as aeronaves cadastradas.
  *     tags:
  *       - Aeronaves
+ *     parameters:
+ *       - in: query
+ *         name: modelo
+ *         required: false
+ *         schema:
+ *           type: string
+ *         description: Busca por termo no modelo da aeronave.
+ *         example: Embraer
+ *       - in: query
+ *         name: tipo
+ *         required: false
+ *         schema:
+ *           type: string
+ *           enum: [COMERCIAL, MILITAR]
+ *         description: Filtra aeronaves pelo tipo.
+ *         example: comercial
+ *       - in: query
+ *         name: capacidadeMin
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           minimum: 0
+ *         description: Capacidade minima da aeronave.
+ *         example: 100
+ *       - in: query
+ *         name: capacidadeMax
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           minimum: 0
+ *         description: Capacidade maxima da aeronave.
+ *         example: 200
+ *       - in: query
+ *         name: alcanceMin
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           minimum: 0
+ *         description: Alcance minimo da aeronave.
+ *         example: 3000
+ *       - in: query
+ *         name: alcanceMax
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           minimum: 0
+ *         description: Alcance maximo da aeronave.
+ *         example: 6000
+ *       - in: query
+ *         name: page
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *         description: Pagina desejada.
+ *       - in: query
+ *         name: limit
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 10
+ *         description: Quantidade de itens por pagina.
  *     responses:
  *       200:
- *         description: Lista de aeronaves.
+ *         description: Lista paginada de aeronaves.
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Aeronave'
+ *               type: object
+ *               properties:
+ *                 dados:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Aeronave'
+ *                 paginacao:
+ *                   type: object
+ *                   properties:
+ *                     total:
+ *                       type: integer
+ *                       example: 25
+ *                     page:
+ *                       type: integer
+ *                       example: 1
+ *                     limit:
+ *                       type: integer
+ *                       example: 10
+ *                     totalPages:
+ *                       type: integer
+ *                       example: 3
+ *       400:
+ *         description: Filtros ou parametros de paginacao invalidos.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
-aeronaveRoutes.get("/", async (_req, res) => {
-    const aeronaves = await aeronaveController.listar();
-    res.json(aeronaves);
+aeronaveRoutes.get("/", async (req, res) => {
+    try {
+        const aeronaves = await aeronaveController.listar({
+            ...(typeof req.query.modelo === "string" ? { modelo: req.query.modelo } : {}),
+            ...(typeof req.query.tipo === "string" ? { tipo: req.query.tipo } : {}),
+            ...(typeof req.query.capacidadeMin === "string" ? { capacidadeMin: req.query.capacidadeMin } : {}),
+            ...(typeof req.query.capacidadeMax === "string" ? { capacidadeMax: req.query.capacidadeMax } : {}),
+            ...(typeof req.query.alcanceMin === "string" ? { alcanceMin: req.query.alcanceMin } : {}),
+            ...(typeof req.query.alcanceMax === "string" ? { alcanceMax: req.query.alcanceMax } : {}),
+            ...(typeof req.query.page === "string" ? { page: req.query.page } : {}),
+            ...(typeof req.query.limit === "string" ? { limit: req.query.limit } : {})
+        });
+        res.json(aeronaves);
+    } catch (error) {
+        const message = error instanceof Error ? error.message : "Erro ao listar aeronaves.";
+        res.status(400).json({ message });
+    }
 });
 
 /**
