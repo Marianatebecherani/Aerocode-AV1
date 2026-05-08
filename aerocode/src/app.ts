@@ -10,7 +10,7 @@ import { Peca } from './models/peca';
 import { Etapa } from './models/etapa';
 import { Teste } from './models/teste';
 import { Relatorio } from './models/relatorio';
-import { PersistenceManager } from '../backend/src/shared/persistence/persistence';
+import { PersistenceManager } from '../backend/src/shared/persistence';
 
 // --- Configuração do CLI ---
 const rl = readline.createInterface({
