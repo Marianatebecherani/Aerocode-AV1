@@ -339,6 +339,33 @@ const swaggerDefinition = {
                     }
                 }
             },
+            Login: {
+                type: "object",
+                required: ["usuario", "senha"],
+                properties: {
+                    usuario: {
+                        type: "string",
+                        example: "maria.santos"
+                    },
+                    senha: {
+                        type: "string",
+                        format: "password",
+                        example: "Senha@123"
+                    }
+                }
+            },
+            LoginResponse: {
+                type: "object",
+                properties: {
+                    autenticado: {
+                        type: "boolean",
+                        example: true
+                    },
+                    funcionario: {
+                        $ref: "#/components/schemas/Funcionario"
+                    }
+                }
+            },
             ErrorResponse: {
                 type: "object",
                 properties: {
