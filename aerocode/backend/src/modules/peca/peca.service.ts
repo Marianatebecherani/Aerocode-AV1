@@ -33,7 +33,7 @@ export class PecaService {
     async listar(filtros: ListarPecasDTO = {}): Promise<ListarPecasResponseDTO> {
         const tipo = this.normalizarTipoFiltro(filtros.tipo);
         const status = this.normalizarStatusFiltro(filtros.status);
-        const aeronaveCodigo = filtros.aeronaveCodigo?.trim();
+        const aeronaveCodigo = this.normalizarAeronaveCodigoFiltro(filtros.aeronaveCodigo);
         const termo = filtros.termo?.trim().toLowerCase();
         const page = this.normalizarInteiroPositivo(filtros.page, 1, "page");
         const limit = this.normalizarInteiroPositivo(filtros.limit, 10, "limit");
@@ -141,6 +141,14 @@ export class PecaService {
         }
 
         return statusNormalizado;
+    }
+
+    private normalizarAeronaveCodigoFiltro(aeronaveCodigo?: string): string | undefined {
+        if (!aeronaveCodigo || aeronaveCodigo.trim().length === 0) {
+            return undefined;
+        }
+
+        return aeronaveCodigo.trim().toUpperCase();
     }
 
     private normalizarInteiroPositivo(valor: string | undefined, padrao: number, campo: string): number {

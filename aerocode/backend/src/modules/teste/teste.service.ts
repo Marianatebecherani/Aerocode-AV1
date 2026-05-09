@@ -26,7 +26,7 @@ export class TesteService {
     }
 
     async listar(filtros: ListarTestesDTO = {}): Promise<ListarTestesResponseDTO> {
-        const aeronaveCodigo = filtros.aeronaveCodigo?.trim();
+        const aeronaveCodigo = this.normalizarAeronaveCodigoFiltro(filtros.aeronaveCodigo);
         const tipo = this.normalizarTipoFiltro(filtros.tipo);
         const resultado = this.normalizarResultadoFiltro(filtros.resultado);
         const page = this.normalizarInteiroPositivo(filtros.page, 1, "page");
@@ -129,6 +129,14 @@ export class TesteService {
         }
 
         return resultadoNormalizado;
+    }
+
+    private normalizarAeronaveCodigoFiltro(aeronaveCodigo?: string): string | undefined {
+        if (!aeronaveCodigo || aeronaveCodigo.trim().length === 0) {
+            return undefined;
+        }
+
+        return aeronaveCodigo.trim().toUpperCase();
     }
 
     private normalizarInteiroPositivo(valor: string | undefined, padrao: number, campo: string): number {

@@ -36,7 +36,7 @@ export class EtapaService {
     }
 
     async listar(filtros: ListarEtapasDTO = {}): Promise<ListarEtapasResponseDTO> {
-        const aeronaveCodigo = filtros.aeronaveCodigo?.trim();
+        const aeronaveCodigo = this.normalizarAeronaveCodigoFiltro(filtros.aeronaveCodigo);
         const nome = filtros.nome?.trim().toLowerCase();
         const status = this.normalizarStatusFiltro(filtros.status);
         const prazoInicio = this.normalizarDataFiltro(filtros.prazoInicio, "prazoInicio");
@@ -187,6 +187,14 @@ export class EtapaService {
         }
 
         return statusNormalizado;
+    }
+
+    private normalizarAeronaveCodigoFiltro(aeronaveCodigo?: string): string | undefined {
+        if (!aeronaveCodigo || aeronaveCodigo.trim().length === 0) {
+            return undefined;
+        }
+
+        return aeronaveCodigo.trim().toUpperCase();
     }
 
     private normalizarDataFiltro(valor: string | undefined, campo: string): Date | undefined {
