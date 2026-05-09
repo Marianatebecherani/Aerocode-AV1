@@ -38,11 +38,11 @@ export const funcionarios = [
   // 4 Administradores
   {
     id: "1",
-    nome: "Carlos Henrique Souza",
+    nome: "Gerson da Penha",
     telefone: "(12) 99111-1001",
     endereco: "Rua das Palmeiras, 120 - São José dos Campos/SP",
-    usuario: "carlos.admin",
-    senha: "admin123",
+    usuario: "gerson.admin",
+    senha: "adminpassword",
     nivelPermissao: "ADMINISTRADOR"
   },
   {
@@ -51,7 +51,7 @@ export const funcionarios = [
     telefone: "(12) 99111-1002",
     endereco: "Av. Andrômeda, 450 - São José dos Campos/SP",
     usuario: "fernanda.admin",
-    senha: "admin123",
+    senha: "adminpassword",
     nivelPermissao: "ADMINISTRADOR"
   },
   {
@@ -60,7 +60,7 @@ export const funcionarios = [
     telefone: "(12) 99111-1003",
     endereco: "Rua Saturnino de Brito, 88 - Jacareí/SP",
     usuario: "ricardo.admin",
-    senha: "admin123",
+    senha: "adminpassword",
     nivelPermissao: "ADMINISTRADOR"
   },
   {
@@ -69,18 +69,18 @@ export const funcionarios = [
     telefone: "(12) 99111-1004",
     endereco: "Rua Esperança, 210 - Taubaté/SP",
     usuario: "juliana.admin",
-    senha: "admin123",
+    senha: "adminpassword",
     nivelPermissao: "ADMINISTRADOR"
   },
 
   // Engenheiros
   {
     id: "5",
-    nome: "Marcos Vinicius Rocha",
+    nome: "Mariana Tebecherani",
     telefone: "(12) 99222-2001",
     endereco: "Av. Cidade Jardim, 900 - São José dos Campos/SP",
-    usuario: "marcos.eng",
-    senha: "eng123",
+    usuario: "mariana.eng",
+    senha: "engpassword",
     nivelPermissao: "ENGENHEIRO"
   },
   {
@@ -89,7 +89,7 @@ export const funcionarios = [
     telefone: "(12) 99222-2002",
     endereco: "Rua Monte Castelo, 77 - Caçapava/SP",
     usuario: "patricia.eng",
-    senha: "eng123",
+    senha: "engpassword",
     nivelPermissao: "ENGENHEIRO"
   },
   {
@@ -98,7 +98,7 @@ export const funcionarios = [
     telefone: "(12) 99222-2003",
     endereco: "Rua das Acácias, 300 - São José dos Campos/SP",
     usuario: "andre.eng",
-    senha: "eng123",
+    senha: "engpassword",
     nivelPermissao: "ENGENHEIRO"
   },
   {
@@ -107,18 +107,18 @@ export const funcionarios = [
     telefone: "(12) 99222-2004",
     endereco: "Av. São João, 155 - São José dos Campos/SP",
     usuario: "camila.eng",
-    senha: "eng123",
+    senha: "engpassword",
     nivelPermissao: "ENGENHEIRO"
   },
 
   // Operadores
   {
     id: "9",
-    nome: "Eduardo Nunes Santos",
+    nome: "João Inácio da Silva",
     telefone: "(12) 99333-3001",
     endereco: "Rua Primavera, 80 - Jacareí/SP",
-    usuario: "eduardo.op",
-    senha: "op123",
+    usuario: "joao.op",
+    senha: "oppassword",
     nivelPermissao: "OPERADOR"
   },
   {
@@ -127,7 +127,7 @@ export const funcionarios = [
     telefone: "(12) 99333-3002",
     endereco: "Rua das Flores, 91 - São José dos Campos/SP",
     usuario: "larissa.op",
-    senha: "op123",
+    senha: "oppassword",
     nivelPermissao: "OPERADOR"
   },
   {
@@ -136,7 +136,7 @@ export const funcionarios = [
     telefone: "(12) 99333-3003",
     endereco: "Av. Cassiano Ricardo, 500 - São José dos Campos/SP",
     usuario: "gustavo.op",
-    senha: "op123",
+    senha: "oppassword",
     nivelPermissao: "OPERADOR"
   },
   {
@@ -145,7 +145,7 @@ export const funcionarios = [
     telefone: "(12) 99333-3004",
     endereco: "Rua Central, 55 - Taubaté/SP",
     usuario: "bianca.op",
-    senha: "op123",
+    senha: "oppassword",
     nivelPermissao: "OPERADOR"
   }
 ];
