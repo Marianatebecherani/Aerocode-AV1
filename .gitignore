@@ -141,3 +141,6 @@ vite.config.ts.timestamp-*
 # Temporary folders
 */data
 */backups
+
+# Backend persistence data
+aerocode/backend/src/data/
