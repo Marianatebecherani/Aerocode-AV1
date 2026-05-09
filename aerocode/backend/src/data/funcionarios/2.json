@@ -1,9 +1,0 @@
-{
-  "id": "2",
-  "nome": "Fernanda Alves Lima",
-  "telefone": "(12) 99111-1002",
-  "endereco": "Av. Andrômeda, 450 - São José dos Campos/SP",
-  "usuario": "fernanda.admin",
-  "senha": "$2b$10$kwtIMzCF4CkW4trI5F/.2upMtKERv6mkyHwx8mlJTQMMdK/I./mia",
-  "nivelPermissao": "ADMINISTRADOR"
-}
