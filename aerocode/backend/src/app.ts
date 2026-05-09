@@ -1,3 +1,4 @@
+import cors = require("cors");
 import express = require("express");
 import { Request, Response } from "express";
 import { swaggerSpec, swaggerUi } from "./config/swagger";
@@ -11,6 +12,7 @@ import { testeRoutes } from "./modules/teste/teste.routes";
 
 export const app = express();
 
+app.use(cors());
 app.use(express.json());
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
