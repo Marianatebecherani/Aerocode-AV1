@@ -15,7 +15,7 @@ export class RelatorioService {
     ) {}
 
     async criar(dto: CriarRelatorioDTO): Promise<RelatorioResponseDTO> {
-        const aeronaveCodigo = dto.aeronaveCodigo?.trim();
+        const aeronaveCodigo = this.normalizarAeronaveCodigo(dto.aeronaveCodigo);
         if (!aeronaveCodigo) {
             throw new Error("Codigo da aeronave e obrigatorio para gerar o relatorio.");
         }
@@ -80,6 +80,14 @@ export class RelatorioService {
 
     async deletar(id: string): Promise<boolean> {
         return this.relatorioRepository.deletar(id);
+    }
+
+    private normalizarAeronaveCodigo(aeronaveCodigo?: string): string | undefined {
+        if (!aeronaveCodigo || aeronaveCodigo.trim().length === 0) {
+            return undefined;
+        }
+
+        return aeronaveCodigo.trim().toUpperCase();
     }
 
     private normalizarDataFiltro(valor: string | undefined, campo: string): Date | undefined {

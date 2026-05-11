@@ -227,6 +227,11 @@ const swaggerDefinition = {
                         type: "string",
                         example: "Montagem da asa"
                     },
+                    ordemExecucao: {
+                        type: "integer",
+                        example: 1,
+                        description: "Ordem calculada da etapa dentro da aeronave, usando prazoConclusao e prioridade."
+                    },
                     prazoConclusao: {
                         type: "string",
                         format: "date-time",

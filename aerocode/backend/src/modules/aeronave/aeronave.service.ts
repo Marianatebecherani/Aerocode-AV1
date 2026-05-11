@@ -1,4 +1,5 @@
 import { EtapaRepository } from "../etapa/etapa.repository";
+import { Etapa } from "../etapa/etapa.entity";
 import { FuncionarioRepository } from "../funcionario/funcionario.repository";
 import { PecaRepository } from "../peca/peca.repository";
 import { TesteRepository } from "../teste/teste.repository";
@@ -118,8 +119,10 @@ export class AeronaveService {
             alcance: aeronave.alcance,
             etapas: etapas
                 .filter((etapa) => etapa.aeronaveCodigo === aeronave.codigo)
-                .map((etapa) => ({
+                .sort((a, b) => this.compararOrdemExecucao(a, b))
+                .map((etapa, indice) => ({
                     nome: etapa.nome,
+                    ordemExecucao: indice + 1,
                     prazoConclusao: this.formatarData(etapa.prazoConclusao),
                     prioridade: etapa.prioridade,
                     status: etapa.statusTracker.atual?.status ?? null,
@@ -186,7 +189,8 @@ export class AeronaveService {
                 .map((peca) => peca.toResponse()),
             etapas: etapas
                 .filter((etapa) => etapa.aeronaveCodigo === aeronave.codigo)
-                .map((etapa) => etapa.toResponse()),
+                .sort((a, b) => this.compararOrdemExecucao(a, b))
+                .map((etapa, indice) => etapa.toResponse(indice + 1)),
             testes: testes
                 .filter((teste) => teste.aeronaveCodigo === aeronave.codigo)
                 .map((teste) => teste.toResponse())
@@ -195,6 +199,21 @@ export class AeronaveService {
 
     private formatarData(data: string): string {
         return new Date(data).toISOString().slice(0, 10);
+    }
+
+    private compararOrdemExecucao(a: Etapa, b: Etapa): number {
+        const prazoA = new Date(a.prazoConclusao).getTime();
+        const prazoB = new Date(b.prazoConclusao).getTime();
+
+        if (prazoA !== prazoB) {
+            return prazoA - prazoB;
+        }
+
+        if (a.prioridade !== b.prioridade) {
+            return a.prioridade - b.prioridade;
+        }
+
+        return a.id.localeCompare(b.id, undefined, { numeric: true });
     }
 
     private formatarDataHora(data?: Date | string): string | null {

@@ -289,14 +289,19 @@ etapaRoutes.patch("/:id", async (req, res) => {
  *               $ref: '#/components/schemas/ErrorResponse'
  */
 etapaRoutes.patch("/:id/status/prosseguir", async (req, res) => {
-    const etapa = await etapaController.prosseguirStatus(req.params.id);
+    try {
+        const etapa = await etapaController.prosseguirStatus(req.params.id);
 
-    if (!etapa) {
-        res.status(404).json({ message: "Etapa nao encontrada." });
-        return;
+        if (!etapa) {
+            res.status(404).json({ message: "Etapa nao encontrada." });
+            return;
+        }
+
+        res.json(etapa);
+    } catch (error) {
+        const message = error instanceof Error ? error.message : "Erro ao avancar status da etapa.";
+        res.status(400).json({ message });
     }
-
-    res.json(etapa);
 });
 
 /**
@@ -329,14 +334,19 @@ etapaRoutes.patch("/:id/status/prosseguir", async (req, res) => {
  *               $ref: '#/components/schemas/ErrorResponse'
  */
 etapaRoutes.patch("/:id/status/retroceder", async (req, res) => {
-    const etapa = await etapaController.retrocederStatus(req.params.id);
+    try {
+        const etapa = await etapaController.retrocederStatus(req.params.id);
 
-    if (!etapa) {
-        res.status(404).json({ message: "Etapa nao encontrada." });
-        return;
+        if (!etapa) {
+            res.status(404).json({ message: "Etapa nao encontrada." });
+            return;
+        }
+
+        res.json(etapa);
+    } catch (error) {
+        const message = error instanceof Error ? error.message : "Erro ao retroceder status da etapa.";
+        res.status(400).json({ message });
     }
-
-    res.json(etapa);
 });
 
 /**

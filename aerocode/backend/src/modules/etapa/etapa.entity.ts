@@ -42,6 +42,7 @@ export type PaginacaoResponseDTO = {
 export type EtapaResponseDTO = {
     id: string;
     nome: string;
+    ordemExecucao?: number;
     prazoConclusao: string;
     prioridade: number;
     statusTracker: StatusTrackerEtapaDTO;
@@ -82,7 +83,7 @@ export class Etapa {
         this.nome = props.nome.trim();
         this.prazoConclusao = Etapa.normalizarPrazoConclusao(props.prazoConclusao);
         this.prioridade = Etapa.normalizarPrioridade(props.prioridade);
-        this.aeronaveCodigo = props.aeronaveCodigo.trim();
+        this.aeronaveCodigo = Etapa.normalizarAeronaveCodigo(props.aeronaveCodigo);
         this.funcionariosIds = Etapa.normalizarFuncionariosIds(props.funcionariosIds ?? []);
         this.statusTracker = Etapa.criarStatusTracker(props);
     }
@@ -143,10 +144,11 @@ export class Etapa {
         this.funcionariosIds = this.funcionariosIds.filter((id) => id !== idNormalizado);
     }
 
-    toResponse(): EtapaResponseDTO {
+    toResponse(ordemExecucao?: number): EtapaResponseDTO {
         return {
             id: this.id,
             nome: this.nome,
+            ...(ordemExecucao !== undefined ? { ordemExecucao } : {}),
             prazoConclusao: this.prazoConclusao,
             prioridade: this.prioridade,
             statusTracker: statusTrackerEtapaToDTO(this.statusTracker),
@@ -179,6 +181,11 @@ export class Etapa {
         if (!aeronaveCodigo || aeronaveCodigo.trim().length === 0) {
             throw new Error("Aeronave da etapa e obrigatoria.");
         }
+    }
+
+    private static normalizarAeronaveCodigo(aeronaveCodigo: string): string {
+        Etapa.validarAeronaveCodigo(aeronaveCodigo);
+        return aeronaveCodigo.trim().toUpperCase();
     }
 
     private static normalizarPrazoConclusao(prazoConclusao: string): string {

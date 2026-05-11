@@ -82,7 +82,7 @@ export class Peca {
         this.nome = props.nome.trim();
         this.tipo = Peca.normalizarTipo(props.tipo);
         this.fornecedor = props.fornecedor.trim();
-        this.aeronaveCodigo = props.aeronaveCodigo.trim();
+        this.aeronaveCodigo = Peca.normalizarAeronaveCodigo(props.aeronaveCodigo);
         this.statusTracker = Peca.criarStatusTracker(props);
     }
 
@@ -139,6 +139,11 @@ export class Peca {
         if (!aeronaveCodigo || aeronaveCodigo.trim().length === 0) {
             throw new Error("Codigo da aeronave da peca e obrigatorio.");
         }
+    }
+
+    private static normalizarAeronaveCodigo(aeronaveCodigo: string): string {
+        Peca.validarAeronaveCodigo(aeronaveCodigo);
+        return aeronaveCodigo.trim().toUpperCase();
     }
 
     private static normalizarTipo(tipo: TipoPeca | string): TipoPeca {

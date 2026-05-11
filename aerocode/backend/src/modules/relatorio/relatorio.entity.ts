@@ -49,7 +49,7 @@ export class Relatorio {
         Relatorio.validarDetalhes(props.detalhes);
 
         this.id = props.id.trim();
-        this.aeronaveCodigo = props.aeronaveCodigo.trim();
+        this.aeronaveCodigo = Relatorio.normalizarAeronaveCodigo(props.aeronaveCodigo);
         this.dataEmissao = Relatorio.normalizarDataEmissao(props.dataEmissao);
         this.detalhes = props.detalhes;
     }
@@ -82,6 +82,11 @@ export class Relatorio {
         if (!aeronaveCodigo || aeronaveCodigo.trim().length === 0) {
             throw new Error("Codigo da aeronave do relatorio e obrigatorio.");
         }
+    }
+
+    private static normalizarAeronaveCodigo(aeronaveCodigo: string): string {
+        Relatorio.validarAeronaveCodigo(aeronaveCodigo);
+        return aeronaveCodigo.trim().toUpperCase();
     }
 
     private static validarDetalhes(detalhes: AeronaveDetalhesResponseDTO): void {

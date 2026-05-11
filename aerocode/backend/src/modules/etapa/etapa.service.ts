@@ -17,9 +17,9 @@ export class EtapaService {
     ) {}
 
     async criar(dto: CriarEtapaDTO): Promise<EtapaResponseDTO> {
-        const etapaExistente = await this.etapaRepository.buscarPorNome(dto.nome);
+        const etapaExistente = await this.etapaRepository.buscarPorNomeEAeronave(dto.nome, dto.aeronaveCodigo);
         if (etapaExistente) {
-            throw new Error("Ja existe uma etapa com esse nome.");
+            throw new Error("Ja existe uma etapa com esse nome para esta aeronave.");
         }
 
         const etapa = new Etapa({
@@ -32,7 +32,7 @@ export class EtapaService {
         });
 
         const etapaCriada = await this.etapaRepository.criar(etapa);
-        return etapaCriada.toResponse();
+        return this.toResponseComOrdem(etapaCriada);
     }
 
     async listar(filtros: ListarEtapasDTO = {}): Promise<ListarEtapasResponseDTO> {
@@ -49,6 +49,7 @@ export class EtapaService {
         }
 
         const etapas = await this.etapaRepository.listar();
+        const ordemExecucaoPorEtapa = this.criarMapaOrdemExecucao(etapas);
         const etapasFiltradas = etapas.filter((etapa) => {
             const prazoConclusao = new Date(etapa.prazoConclusao);
             const atendeAeronave = !aeronaveCodigo || etapa.aeronaveCodigo === aeronaveCodigo;
@@ -58,12 +59,14 @@ export class EtapaService {
             const atendePrazoFim = !prazoFim || prazoConclusao.getTime() <= prazoFim.getTime();
 
             return atendeAeronave && atendeNome && atendeStatus && atendePrazoInicio && atendePrazoFim;
-        });
+        }).sort((a, b) => this.compararOrdemResposta(a, b));
 
         const total = etapasFiltradas.length;
         const totalPages = Math.ceil(total / limit);
         const inicio = (page - 1) * limit;
-        const dados = etapasFiltradas.slice(inicio, inicio + limit).map((etapa) => etapa.toResponse());
+        const dados = etapasFiltradas
+            .slice(inicio, inicio + limit)
+            .map((etapa) => etapa.toResponse(ordemExecucaoPorEtapa.get(etapa.id)));
 
         return {
             dados,
@@ -78,7 +81,7 @@ export class EtapaService {
 
     async buscarPorId(id: string): Promise<EtapaResponseDTO | null> {
         const etapa = await this.etapaRepository.buscarPorId(id);
-        return etapa ? etapa.toResponse() : null;
+        return etapa ? this.toResponseComOrdem(etapa) : null;
     }
 
     async atualizar(id: string, dto: AtualizarEtapaDTO): Promise<EtapaResponseDTO | null> {
@@ -87,18 +90,29 @@ export class EtapaService {
             return null;
         }
 
+        const nomeAtualizado = dto.nome ?? etapaAtual.nome;
+        const aeronaveCodigoAtualizado = dto.aeronaveCodigo ?? etapaAtual.aeronaveCodigo;
+        const etapaExistente = await this.etapaRepository.buscarPorNomeEAeronave(
+            nomeAtualizado,
+            aeronaveCodigoAtualizado,
+            etapaAtual.id
+        );
+        if (etapaExistente) {
+            throw new Error("Ja existe uma etapa com esse nome para esta aeronave.");
+        }
+
         const etapaAtualizada = new Etapa({
             id: etapaAtual.id,
-            nome: dto.nome ?? etapaAtual.nome,
+            nome: nomeAtualizado,
             prazoConclusao: dto.prazoConclusao ?? etapaAtual.prazoConclusao,
             prioridade: dto.prioridade ?? etapaAtual.prioridade,
-            aeronaveCodigo: dto.aeronaveCodigo ?? etapaAtual.aeronaveCodigo,
+            aeronaveCodigo: aeronaveCodigoAtualizado,
             funcionariosIds: dto.funcionariosIds ?? etapaAtual.funcionariosIds,
             statusTracker: etapaAtual.statusTracker
         });
 
         const resultado = await this.etapaRepository.atualizar(id, etapaAtualizada);
-        return resultado ? resultado.toResponse() : null;
+        return resultado ? this.toResponseComOrdem(resultado) : null;
     }
 
     async deletar(id: string): Promise<boolean> {
@@ -111,9 +125,14 @@ export class EtapaService {
             return null;
         }
 
+        const proximoStatus = this.obterProximoStatus(etapa);
+        if (proximoStatus) {
+            await this.validarSequenciaStatus(etapa, proximoStatus);
+        }
+
         etapa.prosseguirStatus();
         const resultado = await this.etapaRepository.atualizar(id, etapa);
-        return resultado ? resultado.toResponse() : null;
+        return resultado ? this.toResponseComOrdem(resultado) : null;
     }
 
     async retrocederStatus(id: string): Promise<EtapaResponseDTO | null> {
@@ -122,9 +141,14 @@ export class EtapaService {
             return null;
         }
 
+        const statusAnterior = this.obterStatusAnterior(etapa);
+        if (statusAnterior) {
+            await this.validarSequenciaStatus(etapa, statusAnterior);
+        }
+
         etapa.retrocederStatus();
         const resultado = await this.etapaRepository.atualizar(id, etapa);
-        return resultado ? resultado.toResponse() : null;
+        return resultado ? this.toResponseComOrdem(resultado) : null;
     }
 
     async iniciar(id: string): Promise<EtapaResponseDTO | null> {
@@ -133,9 +157,10 @@ export class EtapaService {
             return null;
         }
 
+        await this.validarSequenciaStatus(etapa, StatusEtapa.EM_ANDAMENTO);
         etapa.iniciar();
         const resultado = await this.etapaRepository.atualizar(id, etapa);
-        return resultado ? resultado.toResponse() : null;
+        return resultado ? this.toResponseComOrdem(resultado) : null;
     }
 
     async finalizar(id: string): Promise<EtapaResponseDTO | null> {
@@ -144,9 +169,10 @@ export class EtapaService {
             return null;
         }
 
+        await this.validarSequenciaStatus(etapa, StatusEtapa.CONCLUIDA);
         etapa.finalizar();
         const resultado = await this.etapaRepository.atualizar(id, etapa);
-        return resultado ? resultado.toResponse() : null;
+        return resultado ? this.toResponseComOrdem(resultado) : null;
     }
 
     async associarFuncionario(id: string, funcionarioId: string): Promise<EtapaResponseDTO | null> {
@@ -162,7 +188,7 @@ export class EtapaService {
 
         etapa.associarFuncionario(funcionario.id);
         const resultado = await this.etapaRepository.atualizar(id, etapa);
-        return resultado ? resultado.toResponse() : null;
+        return resultado ? this.toResponseComOrdem(resultado) : null;
     }
 
     async desassociarFuncionario(id: string, funcionarioId: string): Promise<EtapaResponseDTO | null> {
@@ -173,7 +199,7 @@ export class EtapaService {
 
         etapa.desassociarFuncionario(funcionarioId);
         const resultado = await this.etapaRepository.atualizar(id, etapa);
-        return resultado ? resultado.toResponse() : null;
+        return resultado ? this.toResponseComOrdem(resultado) : null;
     }
 
     private normalizarStatusFiltro(status?: string): StatusEtapa | undefined {
@@ -221,5 +247,111 @@ export class EtapaService {
         }
 
         return numero;
+    }
+
+    private async validarSequenciaStatus(etapaAlterada: Etapa, novoStatus: StatusEtapa): Promise<void> {
+        const etapas = (await this.etapaRepository.listar())
+            .filter((etapa) => etapa.aeronaveCodigo === etapaAlterada.aeronaveCodigo)
+            .sort((a, b) => this.compararOrdemExecucao(a, b));
+
+        const statusPorEtapa = new Map(
+            etapas.map((etapa) => [etapa.id, etapa.statusTracker.atual?.status ?? StatusEtapa.PENDENTE])
+        );
+        statusPorEtapa.set(etapaAlterada.id, novoStatus);
+
+        for (const [indice, etapa] of etapas.entries()) {
+            const status = statusPorEtapa.get(etapa.id) ?? StatusEtapa.PENDENTE;
+
+            if (status === StatusEtapa.PENDENTE) {
+                continue;
+            }
+
+            const etapaAnteriorNaoConcluida = etapas
+                .slice(0, indice)
+                .find((anterior) => statusPorEtapa.get(anterior.id) !== StatusEtapa.CONCLUIDA);
+
+            if (etapaAnteriorNaoConcluida) {
+                throw new Error(
+                    `A etapa "${etapa.nome}" so pode sair de PENDENTE quando a etapa anterior "${etapaAnteriorNaoConcluida.nome}" estiver concluida.`
+                );
+            }
+        }
+    }
+
+    private compararOrdemExecucao(a: Etapa, b: Etapa): number {
+        const prazoA = new Date(a.prazoConclusao).getTime();
+        const prazoB = new Date(b.prazoConclusao).getTime();
+
+        if (prazoA !== prazoB) {
+            return prazoA - prazoB;
+        }
+
+        if (a.prioridade !== b.prioridade) {
+            return a.prioridade - b.prioridade;
+        }
+
+        return a.id.localeCompare(b.id, undefined, { numeric: true });
+    }
+
+    private compararOrdemResposta(a: Etapa, b: Etapa): number {
+        if (a.aeronaveCodigo !== b.aeronaveCodigo) {
+            return a.aeronaveCodigo.localeCompare(b.aeronaveCodigo);
+        }
+
+        return this.compararOrdemExecucao(a, b);
+    }
+
+    private criarMapaOrdemExecucao(etapas: Etapa[]): Map<string, number> {
+        const etapasPorAeronave = new Map<string, Etapa[]>();
+
+        for (const etapa of etapas) {
+            const etapasDaAeronave = etapasPorAeronave.get(etapa.aeronaveCodigo) ?? [];
+            etapasDaAeronave.push(etapa);
+            etapasPorAeronave.set(etapa.aeronaveCodigo, etapasDaAeronave);
+        }
+
+        const ordemExecucaoPorEtapa = new Map<string, number>();
+        for (const etapasDaAeronave of etapasPorAeronave.values()) {
+            etapasDaAeronave
+                .sort((a, b) => this.compararOrdemExecucao(a, b))
+                .forEach((etapa, indice) => ordemExecucaoPorEtapa.set(etapa.id, indice + 1));
+        }
+
+        return ordemExecucaoPorEtapa;
+    }
+
+    private async toResponseComOrdem(etapa: Etapa): Promise<EtapaResponseDTO> {
+        const etapas = await this.etapaRepository.listar();
+        const ordemExecucaoPorEtapa = this.criarMapaOrdemExecucao(etapas);
+
+        return etapa.toResponse(ordemExecucaoPorEtapa.get(etapa.id));
+    }
+
+    private obterProximoStatus(etapa: Etapa): StatusEtapa | null {
+        const statusAtual = etapa.statusTracker.atual?.status ?? StatusEtapa.PENDENTE;
+
+        if (statusAtual === StatusEtapa.PENDENTE) {
+            return StatusEtapa.EM_ANDAMENTO;
+        }
+
+        if (statusAtual === StatusEtapa.EM_ANDAMENTO) {
+            return StatusEtapa.CONCLUIDA;
+        }
+
+        return null;
+    }
+
+    private obterStatusAnterior(etapa: Etapa): StatusEtapa | null {
+        const statusAtual = etapa.statusTracker.atual?.status ?? StatusEtapa.PENDENTE;
+
+        if (statusAtual === StatusEtapa.CONCLUIDA) {
+            return StatusEtapa.EM_ANDAMENTO;
+        }
+
+        if (statusAtual === StatusEtapa.EM_ANDAMENTO) {
+            return StatusEtapa.PENDENTE;
+        }
+
+        return null;
     }
 }

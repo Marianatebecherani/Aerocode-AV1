@@ -31,9 +31,23 @@ export class EtapaRepository {
         return etapas.find((etapa) => etapa.id === id.trim()) ?? null;
     }
 
-    async buscarPorNome(nome: string): Promise<Etapa | null> {
+    async buscarPorNomeEAeronave(
+        nome: string,
+        aeronaveCodigo: string,
+        ignorarId?: string
+    ): Promise<Etapa | null> {
         const etapas = await this.listar();
-        return etapas.find((etapa) => this.normalizarChave(etapa.nome) === this.normalizarChave(nome)) ?? null;
+        const nomeNormalizado = this.normalizarChave(nome);
+        const aeronaveCodigoNormalizado = aeronaveCodigo.trim().toUpperCase();
+
+        return (
+            etapas.find(
+                (etapa) =>
+                    etapa.id !== ignorarId?.trim() &&
+                    this.normalizarChave(etapa.nome) === nomeNormalizado &&
+                    etapa.aeronaveCodigo === aeronaveCodigoNormalizado
+            ) ?? null
+        );
     }
 
     async atualizar(id: string, etapa: Etapa): Promise<Etapa | null> {

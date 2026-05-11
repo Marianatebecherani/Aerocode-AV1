@@ -63,6 +63,7 @@ export type AeronaveDetalhesFuncionarioDTO = {
 
 export type AeronaveDetalhesEtapaDTO = {
     nome: string;
+    ordemExecucao: number;
     prazoConclusao: string;
     prioridade: number;
     status: string | null;

@@ -70,7 +70,7 @@ export class Teste {
 
         this.id = props.id.trim();
         this.tipo = Teste.normalizarTipo(props.tipo);
-        this.aeronaveCodigo = props.aeronaveCodigo.trim();
+        this.aeronaveCodigo = Teste.normalizarAeronaveCodigo(props.aeronaveCodigo);
         this.resultadoTracker = Teste.criarResultadoTracker(props);
     }
 
@@ -116,6 +116,11 @@ export class Teste {
         if (!aeronaveCodigo || aeronaveCodigo.trim().length === 0) {
             throw new Error("Codigo da aeronave do teste e obrigatorio.");
         }
+    }
+
+    private static normalizarAeronaveCodigo(aeronaveCodigo: string): string {
+        Teste.validarAeronaveCodigo(aeronaveCodigo);
+        return aeronaveCodigo.trim().toUpperCase();
     }
 
     private static normalizarTipo(tipo: TipoTeste | string): TipoTeste {
