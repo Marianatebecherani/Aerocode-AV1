@@ -73,6 +73,13 @@ relatorioRoutes.post("/", async (req, res) => {
  *       - Relatorios
  *     parameters:
  *       - in: query
+ *         name: aeronaveCodigo
+ *         required: false
+ *         schema:
+ *           type: string
+ *         description: Filtra relatorios pelo codigo da aeronave.
+ *         example: AER-0001
+ *       - in: query
  *         name: dataInicio
  *         required: false
  *         schema:
@@ -141,6 +148,7 @@ relatorioRoutes.post("/", async (req, res) => {
 relatorioRoutes.get("/", async (req, res) => {
     try {
         const relatorios = await relatorioController.listar({
+            ...(typeof req.query.aeronaveCodigo === "string" ? { aeronaveCodigo: req.query.aeronaveCodigo } : {}),
             ...(typeof req.query.dataInicio === "string" ? { dataInicio: req.query.dataInicio } : {}),
             ...(typeof req.query.dataFim === "string" ? { dataFim: req.query.dataFim } : {}),
             ...(typeof req.query.page === "string" ? { page: req.query.page } : {}),

@@ -5,6 +5,7 @@ export type CriarRelatorioDTO = {
 };
 
 export type ListarRelatoriosDTO = {
+    aeronaveCodigo?: string;
     dataInicio?: string;
     dataFim?: string;
     page?: string;

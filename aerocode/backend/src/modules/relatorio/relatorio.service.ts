@@ -37,6 +37,7 @@ export class RelatorioService {
     }
 
     async listar(filtros: ListarRelatoriosDTO = {}): Promise<ListarRelatoriosResponseDTO> {
+        const aeronaveCodigo = this.normalizarAeronaveCodigo(filtros.aeronaveCodigo);
         const dataInicio = this.normalizarDataFiltro(filtros.dataInicio, "dataInicio");
         const dataFim = this.normalizarDataFiltro(filtros.dataFim, "dataFim");
         const page = this.normalizarInteiroPositivo(filtros.page, 1, "page");
@@ -49,10 +50,11 @@ export class RelatorioService {
         const relatorios = await this.relatorioRepository.listar();
         const relatoriosFiltrados = relatorios.filter((relatorio) => {
             const dataEmissao = new Date(relatorio.dataEmissao);
+            const atendeAeronave = !aeronaveCodigo || relatorio.aeronaveCodigo === aeronaveCodigo;
             const atendeDataInicio = !dataInicio || dataEmissao.getTime() >= dataInicio.getTime();
             const atendeDataFim = !dataFim || dataEmissao.getTime() <= dataFim.getTime();
 
-            return atendeDataInicio && atendeDataFim;
+            return atendeAeronave && atendeDataInicio && atendeDataFim;
         });
 
         const total = relatoriosFiltrados.length;
