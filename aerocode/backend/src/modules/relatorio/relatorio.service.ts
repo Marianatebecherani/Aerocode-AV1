@@ -7,6 +7,7 @@ import {
     RelatorioResponseDTO
 } from "./relatorio.entity";
 import { RelatorioRepository } from "./relatorio.repository";
+import { determinarStatusRelatorio } from "./relatorio-status";
 
 export class RelatorioService {
     constructor(
@@ -29,6 +30,7 @@ export class RelatorioService {
             id: await this.relatorioRepository.gerarProximoId(),
             aeronaveCodigo,
             dataEmissao: new Date().toISOString(),
+            status: determinarStatusRelatorio(detalhes),
             detalhes
         });
 

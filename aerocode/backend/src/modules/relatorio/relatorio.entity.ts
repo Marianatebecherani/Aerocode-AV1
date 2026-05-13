@@ -1,4 +1,5 @@
 import { AeronaveDetalhesResponseDTO } from "../aeronave";
+import { StatusRelatorio } from "./relatorio-status";
 
 export type CriarRelatorioDTO = {
     aeronaveCodigo: string;
@@ -23,6 +24,7 @@ export type RelatorioResponseDTO = {
     id: string;
     aeronaveCodigo: string;
     dataEmissao: string;
+    status: StatusRelatorio;
     detalhes: AeronaveDetalhesResponseDTO;
 };
 
@@ -35,6 +37,7 @@ export type RelatorioProps = {
     id: string;
     aeronaveCodigo: string;
     dataEmissao: string;
+    status: StatusRelatorio | string;
     detalhes: AeronaveDetalhesResponseDTO;
 };
 
@@ -42,6 +45,7 @@ export class Relatorio {
     id: string;
     aeronaveCodigo: string;
     dataEmissao: string;
+    status: StatusRelatorio;
     detalhes: AeronaveDetalhesResponseDTO;
 
     constructor(props: RelatorioProps) {
@@ -52,6 +56,7 @@ export class Relatorio {
         this.id = props.id.trim();
         this.aeronaveCodigo = Relatorio.normalizarAeronaveCodigo(props.aeronaveCodigo);
         this.dataEmissao = Relatorio.normalizarDataEmissao(props.dataEmissao);
+        this.status = Relatorio.normalizarStatus(props.status);
         this.detalhes = props.detalhes;
     }
 
@@ -60,6 +65,7 @@ export class Relatorio {
             id: this.id,
             aeronaveCodigo: this.aeronaveCodigo,
             dataEmissao: this.dataEmissao,
+            status: this.status,
             detalhes: this.detalhes
         };
     }
@@ -69,6 +75,7 @@ export class Relatorio {
             id: this.id,
             aeronaveCodigo: this.aeronaveCodigo,
             dataEmissao: this.dataEmissao,
+            status: this.status,
             detalhes: this.detalhes
         };
     }
@@ -107,5 +114,18 @@ export class Relatorio {
         }
 
         return data.toISOString();
+    }
+
+    private static normalizarStatus(status: StatusRelatorio | string): StatusRelatorio {
+        if (!status || status.trim().length === 0) {
+            throw new Error("Status do relatorio e obrigatorio.");
+        }
+
+        const statusNormalizado = status.trim().toUpperCase() as StatusRelatorio;
+        if (!Object.values(StatusRelatorio).includes(statusNormalizado)) {
+            throw new Error("Status do relatorio invalido.");
+        }
+
+        return statusNormalizado;
     }
 }
