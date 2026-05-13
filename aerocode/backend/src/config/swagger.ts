@@ -579,6 +579,11 @@ const swaggerDefinition = {
                         format: "date-time",
                         example: "2026-05-08T12:00:00.000Z"
                     },
+                    status: {
+                        type: "string",
+                        enum: ["EM_PRODUCAO", "FINALIZADA"],
+                        example: "EM_PRODUCAO"
+                    },
                     detalhes: {
                         type: "object",
                         description: "Snapshot dos detalhes da aeronave no momento da emissao do relatorio.",
@@ -623,6 +628,119 @@ const swaggerDefinition = {
                                 }
                             }
                         }
+                    }
+                }
+            },
+            DashboardAeronaves: {
+                type: "object",
+                properties: {
+                    total: {
+                        type: "integer",
+                        example: 4
+                    },
+                    "em producao": {
+                        type: "integer",
+                        example: 1
+                    },
+                    finalizadas: {
+                        type: "integer",
+                        example: 3
+                    }
+                }
+            },
+            DashboardEtapas: {
+                type: "object",
+                properties: {
+                    total: {
+                        type: "integer",
+                        example: 16
+                    },
+                    pendentes: {
+                        type: "integer",
+                        example: 4
+                    },
+                    "em andamento": {
+                        type: "integer",
+                        example: 9
+                    },
+                    concluidas: {
+                        type: "integer",
+                        example: 3
+                    }
+                }
+            },
+            DashboardPecas: {
+                type: "object",
+                properties: {
+                    total: {
+                        type: "integer",
+                        example: 20
+                    },
+                    "em producao": {
+                        type: "integer",
+                        example: 7
+                    },
+                    "em transporte": {
+                        type: "integer",
+                        example: 5
+                    },
+                    prontas: {
+                        type: "integer",
+                        example: 8
+                    }
+                }
+            },
+            DashboardTestes: {
+                type: "object",
+                properties: {
+                    total: {
+                        type: "integer",
+                        example: 10
+                    },
+                    reprovados: {
+                        type: "integer",
+                        example: 2
+                    },
+                    aprovados: {
+                        type: "integer",
+                        example: 8
+                    }
+                }
+            },
+            DashboardRelatorios: {
+                type: "object",
+                properties: {
+                    total: {
+                        type: "integer",
+                        example: 10
+                    },
+                    "em producao": {
+                        type: "integer",
+                        example: 2
+                    },
+                    finalizadas: {
+                        type: "integer",
+                        example: 8
+                    }
+                }
+            },
+            DashboardResumo: {
+                type: "object",
+                properties: {
+                    aeronaves: {
+                        $ref: "#/components/schemas/DashboardAeronaves"
+                    },
+                    etapas: {
+                        $ref: "#/components/schemas/DashboardEtapas"
+                    },
+                    pecas: {
+                        $ref: "#/components/schemas/DashboardPecas"
+                    },
+                    testes: {
+                        $ref: "#/components/schemas/DashboardTestes"
+                    },
+                    relatorios: {
+                        $ref: "#/components/schemas/DashboardRelatorios"
                     }
                 }
             },
