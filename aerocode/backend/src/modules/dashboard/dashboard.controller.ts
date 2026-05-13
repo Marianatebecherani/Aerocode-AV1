@@ -1,29 +1,30 @@
 import { DashboardService } from "./dashboard.service";
+import { DashboardFiltrosDTO } from "./dashboard.entity";
 
 export class DashboardController {
     constructor(private readonly dashboardService: DashboardService) {}
 
-    async resumo() {
-        return this.dashboardService.resumo();
+    async resumo(filtros: DashboardFiltrosDTO) {
+        return this.dashboardService.resumo(filtros);
     }
 
-    async aeronaves() {
-        return this.dashboardService.aeronaves();
+    async aeronaves(filtros: DashboardFiltrosDTO) {
+        return this.dashboardService.aeronaves(filtros);
     }
 
-    async etapas() {
-        return this.dashboardService.etapas();
+    async etapas(filtros: DashboardFiltrosDTO) {
+        return this.dashboardService.etapas(filtros);
     }
 
-    async pecas() {
-        return this.dashboardService.pecas();
+    async pecas(filtros: DashboardFiltrosDTO) {
+        return this.dashboardService.pecas(filtros);
     }
 
-    async testes() {
-        return this.dashboardService.testes();
+    async testes(filtros: DashboardFiltrosDTO) {
+        return this.dashboardService.testes(filtros);
     }
 
-    async relatorios() {
-        return this.dashboardService.relatorios();
+    async relatorios(filtros: DashboardFiltrosDTO) {
+        return this.dashboardService.relatorios(filtros);
     }
 }

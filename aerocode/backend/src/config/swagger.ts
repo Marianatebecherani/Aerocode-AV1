@@ -16,6 +16,83 @@ const swaggerDefinition = {
         }
     ],
     components: {
+        parameters: {
+            DashboardFiltroCodigo: {
+                in: "query",
+                name: "codigo",
+                required: false,
+                schema: {
+                    type: "string"
+                },
+                description: "Filtra o dashboard pelo codigo da aeronave.",
+                example: "AER-0001"
+            },
+            DashboardFiltroModelo: {
+                in: "query",
+                name: "modelo",
+                required: false,
+                schema: {
+                    type: "string"
+                },
+                description: "Busca por termo no modelo das aeronaves consideradas no dashboard.",
+                example: "Embraer"
+            },
+            DashboardFiltroTipo: {
+                in: "query",
+                name: "tipo",
+                required: false,
+                schema: {
+                    type: "string",
+                    enum: ["COMERCIAL", "MILITAR"]
+                },
+                description: "Filtra as aeronaves consideradas no dashboard pelo tipo.",
+                example: "comercial"
+            },
+            DashboardFiltroCapacidadeMin: {
+                in: "query",
+                name: "capacidadeMin",
+                required: false,
+                schema: {
+                    type: "integer",
+                    minimum: 0
+                },
+                description: "Capacidade minima das aeronaves consideradas no dashboard.",
+                example: 100
+            },
+            DashboardFiltroCapacidadeMax: {
+                in: "query",
+                name: "capacidadeMax",
+                required: false,
+                schema: {
+                    type: "integer",
+                    minimum: 0
+                },
+                description: "Capacidade maxima das aeronaves consideradas no dashboard.",
+                example: 200
+            },
+            DashboardFiltroAlcanceMin: {
+                in: "query",
+                name: "alcanceMin",
+                required: false,
+                schema: {
+                    type: "integer",
+                    minimum: 0
+                },
+                description: "Alcance minimo das aeronaves consideradas no dashboard.",
+                example: 3000
+            },
+            DashboardFiltroAlcanceMax: {
+                in: "query",
+                name: "alcanceMax",
+                required: false,
+                schema: {
+                    type: "integer",
+                    minimum: 0
+                },
+                description: "Alcance maximo das aeronaves consideradas no dashboard.",
+                example: 6000
+            }
+        },
         schemas: {
             Aeronave: {
                 type: "object",

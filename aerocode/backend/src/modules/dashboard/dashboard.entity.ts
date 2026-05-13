@@ -1,3 +1,13 @@
+export type DashboardFiltrosDTO = {
+    codigo?: string;
+    modelo?: string;
+    tipo?: string;
+    capacidadeMin?: string;
+    capacidadeMax?: string;
+    alcanceMin?: string;
+    alcanceMax?: string;
+};
+
 export type DashboardAeronavesResponseDTO = {
     total: number;
     "em producao": number;

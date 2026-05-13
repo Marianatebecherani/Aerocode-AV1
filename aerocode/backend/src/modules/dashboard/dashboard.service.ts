@@ -1,3 +1,4 @@
+import { Aeronave, TipoAeronave } from "../aeronave/aeronave.entity";
 import { AeronaveRepository } from "../aeronave/aeronave.repository";
 import { EtapaRepository } from "../etapa/etapa.repository";
 import { StatusEtapa } from "../etapa/etapa-status";
@@ -10,6 +11,7 @@ import { ResultadoTeste } from "../teste/teste-resultado";
 import {
     DashboardAeronavesResponseDTO,
     DashboardEtapasResponseDTO,
+    DashboardFiltrosDTO,
     DashboardPecasResponseDTO,
     DashboardRelatoriosResponseDTO,
     DashboardResumoResponseDTO,
@@ -25,13 +27,13 @@ export class DashboardService {
         private readonly relatorioRepository: RelatorioRepository
     ) {}
 
-    async resumo(): Promise<DashboardResumoResponseDTO> {
+    async resumo(filtros: DashboardFiltrosDTO = {}): Promise<DashboardResumoResponseDTO> {
         const [aeronaves, etapas, pecas, testes, relatorios] = await Promise.all([
-            this.aeronaves(),
-            this.etapas(),
-            this.pecas(),
-            this.testes(),
-            this.relatorios()
+            this.aeronaves(filtros),
+            this.etapas(filtros),
+            this.pecas(filtros),
+            this.testes(filtros),
+            this.relatorios(filtros)
         ]);
 
         return {
@@ -43,15 +45,15 @@ export class DashboardService {
         };
     }
 
-    async aeronaves(): Promise<DashboardAeronavesResponseDTO> {
-        const [aeronaves, etapas, pecas, testes] = await Promise.all([
-            this.aeronaveRepository.listar(),
+    async aeronaves(filtros: DashboardFiltrosDTO = {}): Promise<DashboardAeronavesResponseDTO> {
+        const [todasAeronaves, etapas, pecas, testes] = await Promise.all([
+            this.listarAeronavesFiltradas(filtros),
             this.etapaRepository.listar(),
             this.pecaRepository.listar(),
             this.testeRepository.listar()
         ]);
 
-        const aeronavesFinalizadas = aeronaves.filter((aeronave) => {
+        const aeronavesFinalizadas = todasAeronaves.filter((aeronave) => {
             const etapasDaAeronave = etapas.filter((etapa) => etapa.aeronaveCodigo === aeronave.codigo);
             const pecasDaAeronave = pecas.filter((peca) => peca.aeronaveCodigo === aeronave.codigo);
             const testesDaAeronave = testes.filter((teste) => teste.aeronaveCodigo === aeronave.codigo);
@@ -67,14 +69,15 @@ export class DashboardService {
         }).length;
 
         return {
-            total: aeronaves.length,
-            "em producao": aeronaves.length - aeronavesFinalizadas,
+            total: todasAeronaves.length,
+            "em producao": todasAeronaves.length - aeronavesFinalizadas,
             finalizadas: aeronavesFinalizadas
         };
     }
 
-    async etapas(): Promise<DashboardEtapasResponseDTO> {
-        const etapas = await this.etapaRepository.listar();
+    async etapas(filtros: DashboardFiltrosDTO = {}): Promise<DashboardEtapasResponseDTO> {
+        const codigosAeronaves = await this.listarCodigosAeronavesFiltradas(filtros);
+        const etapas = (await this.etapaRepository.listar()).filter((etapa) => codigosAeronaves.has(etapa.aeronaveCodigo));
         const etapasPendentes = etapas.filter((etapa) => etapa.statusTracker.atual?.status === StatusEtapa.PENDENTE).length;
         const etapasEmAndamento = etapas.filter(
             (etapa) => etapa.statusTracker.atual?.status === StatusEtapa.EM_ANDAMENTO
@@ -91,8 +94,9 @@ export class DashboardService {
         };
     }
 
-    async pecas(): Promise<DashboardPecasResponseDTO> {
-        const pecas = await this.pecaRepository.listar();
+    async pecas(filtros: DashboardFiltrosDTO = {}): Promise<DashboardPecasResponseDTO> {
+        const codigosAeronaves = await this.listarCodigosAeronavesFiltradas(filtros);
+        const pecas = (await this.pecaRepository.listar()).filter((peca) => codigosAeronaves.has(peca.aeronaveCodigo));
         const pecasEmProducao = pecas.filter((peca) => peca.statusTracker.atual?.status === StatusPeca.EM_PRODUCAO).length;
         const pecasEmTransporte = pecas.filter(
             (peca) => peca.statusTracker.atual?.status === StatusPeca.EM_TRANSPORTE
@@ -107,8 +111,9 @@ export class DashboardService {
         };
     }
 
-    async testes(): Promise<DashboardTestesResponseDTO> {
-        const testes = await this.testeRepository.listar();
+    async testes(filtros: DashboardFiltrosDTO = {}): Promise<DashboardTestesResponseDTO> {
+        const codigosAeronaves = await this.listarCodigosAeronavesFiltradas(filtros);
+        const testes = (await this.testeRepository.listar()).filter((teste) => codigosAeronaves.has(teste.aeronaveCodigo));
         const testesReprovados = testes.filter(
             (teste) => teste.resultadoTracker.atual?.resultado === ResultadoTeste.REPROVADO
         ).length;
@@ -123,8 +128,11 @@ export class DashboardService {
         };
     }
 
-    async relatorios(): Promise<DashboardRelatoriosResponseDTO> {
-        const relatorios = await this.relatorioRepository.listar();
+    async relatorios(filtros: DashboardFiltrosDTO = {}): Promise<DashboardRelatoriosResponseDTO> {
+        const codigosAeronaves = await this.listarCodigosAeronavesFiltradas(filtros);
+        const relatorios = (await this.relatorioRepository.listar()).filter((relatorio) =>
+            codigosAeronaves.has(relatorio.aeronaveCodigo)
+        );
         const relatoriosEmProducao = relatorios.filter(
             (relatorio) => relatorio.status === StatusRelatorio.EM_PRODUCAO
         ).length;
@@ -137,5 +145,83 @@ export class DashboardService {
             "em producao": relatoriosEmProducao,
             finalizadas: relatoriosFinalizados
         };
+    }
+
+    private async listarCodigosAeronavesFiltradas(filtros: DashboardFiltrosDTO): Promise<Set<string>> {
+        const aeronaves = await this.listarAeronavesFiltradas(filtros);
+        return new Set(aeronaves.map((aeronave) => aeronave.codigo));
+    }
+
+    private async listarAeronavesFiltradas(filtros: DashboardFiltrosDTO): Promise<Aeronave[]> {
+        const codigo = this.normalizarCodigoFiltro(filtros.codigo);
+        const modelo = filtros.modelo?.trim().toLowerCase();
+        const tipo = this.normalizarTipoFiltro(filtros.tipo);
+        const capacidadeMin = this.normalizarInteiroNaoNegativo(filtros.capacidadeMin, "capacidadeMin");
+        const capacidadeMax = this.normalizarInteiroNaoNegativo(filtros.capacidadeMax, "capacidadeMax");
+        const alcanceMin = this.normalizarInteiroNaoNegativo(filtros.alcanceMin, "alcanceMin");
+        const alcanceMax = this.normalizarInteiroNaoNegativo(filtros.alcanceMax, "alcanceMax");
+
+        if (capacidadeMin !== undefined && capacidadeMax !== undefined && capacidadeMin > capacidadeMax) {
+            throw new Error("capacidadeMin deve ser menor ou igual a capacidadeMax.");
+        }
+
+        if (alcanceMin !== undefined && alcanceMax !== undefined && alcanceMin > alcanceMax) {
+            throw new Error("alcanceMin deve ser menor ou igual a alcanceMax.");
+        }
+
+        const aeronaves = await this.aeronaveRepository.listar();
+        return aeronaves.filter((aeronave) => {
+            const atendeCodigo = !codigo || aeronave.codigo === codigo;
+            const atendeModelo = !modelo || aeronave.modelo.toLowerCase().includes(modelo);
+            const atendeTipo = !tipo || aeronave.tipo === tipo;
+            const atendeCapacidadeMin = capacidadeMin === undefined || aeronave.capacidade >= capacidadeMin;
+            const atendeCapacidadeMax = capacidadeMax === undefined || aeronave.capacidade <= capacidadeMax;
+            const atendeAlcanceMin = alcanceMin === undefined || aeronave.alcance >= alcanceMin;
+            const atendeAlcanceMax = alcanceMax === undefined || aeronave.alcance <= alcanceMax;
+
+            return (
+                atendeCodigo &&
+                atendeModelo &&
+                atendeTipo &&
+                atendeCapacidadeMin &&
+                atendeCapacidadeMax &&
+                atendeAlcanceMin &&
+                atendeAlcanceMax
+            );
+        });
+    }
+
+    private normalizarCodigoFiltro(codigo?: string): string | undefined {
+        if (!codigo || codigo.trim().length === 0) {
+            return undefined;
+        }
+
+        return codigo.trim().toUpperCase();
+    }
+
+    private normalizarTipoFiltro(tipo?: string): TipoAeronave | undefined {
+        if (!tipo || tipo.trim().length === 0) {
+            return undefined;
+        }
+
+        const tipoNormalizado = tipo.trim().toUpperCase() as TipoAeronave;
+        if (!Object.values(TipoAeronave).includes(tipoNormalizado)) {
+            throw new Error("Tipo da aeronave invalido.");
+        }
+
+        return tipoNormalizado;
+    }
+
+    private normalizarInteiroNaoNegativo(valor: string | undefined, campo: string): number | undefined {
+        if (!valor || valor.trim().length === 0) {
+            return undefined;
+        }
+
+        const numero = Number(valor);
+        if (!Number.isInteger(numero) || numero < 0) {
+            throw new Error(`Parametro ${campo} deve ser um numero inteiro positivo ou zero.`);
+        }
+
+        return numero;
     }
 }
