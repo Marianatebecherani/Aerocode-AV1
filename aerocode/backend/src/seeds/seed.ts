@@ -10,6 +10,7 @@ import { Peca } from "../modules/peca/peca.entity";
 import { PecaRepository } from "../modules/peca/peca.repository";
 import { Relatorio } from "../modules/relatorio/relatorio.entity";
 import { RelatorioRepository } from "../modules/relatorio/relatorio.repository";
+import { determinarStatusRelatorio } from "../modules/relatorio/relatorio-status";
 import { Teste } from "../modules/teste/teste.entity";
 import { TesteRepository } from "../modules/teste/teste.repository";
 import { aeronaves, etapas, funcionarios, pecas, testes } from "./seed-data";
@@ -97,6 +98,7 @@ async function popularRelatorios(): Promise<number> {
                 id: String(index + 1),
                 aeronaveCodigo: aeronave.codigo,
                 dataEmissao: new Date().toISOString(),
+                status: determinarStatusRelatorio(detalhes),
                 detalhes
             })
         );
