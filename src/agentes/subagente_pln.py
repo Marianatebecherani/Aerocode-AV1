@@ -13,7 +13,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from nltk.corpus import stopwords
 from sentence_transformers import SentenceTransformer
 
-
+# ==========================================================================================
 # PLN com Embeddings, Banco Vetorial e Busca Semantica
 #
 # Este notebook implementa o laboratorio descrito no documento
@@ -25,20 +25,23 @@ from sentence_transformers import SentenceTransformer
 # - gerar embeddings com `SentenceTransformer`;
 # - armazenar os vetores em uma colecao ChromaDB;
 # - consultar os trechos mais semanticamente proximos de uma pergunta.
+# ==========================================================================================
 
-
+# ==========================================================================================
 # 1. Importacao das bibliotecas
 #
 # As bibliotecas necessarias ja estao instaladas no ambiente do projeto.
 # Nesta etapa apenas importamos os recursos usados no fluxo.
+# ==========================================================================================
 
-
+# ==========================================================================================
 # 2. Configuracao do arquivo PDF
 #
 # O roteiro do laboratorio cita o dataset `introducaoml.pdf`. O arquivo deve
 # ficar em `data/introducaoml.pdf`, dentro da pasta do laboratorio. Se ele nao
 # estiver disponivel, o notebook usa o PDF de apoio em `../docs` como fallback
 # para manter o fluxo executavel.
+# ==========================================================================================
 
 DATA_DIR = Path("data")
 DOCS_DIR = Path("..") / "docs"
@@ -72,13 +75,13 @@ def selecionar_pdf(
         f"Nenhum PDF encontrado em {preferred_pdf} ou na pasta {docs_dir}."
     )
 
-
+# ==========================================================================================
 # 3. Leitura do PDF
 #
 # A funcao abaixo percorre todas as paginas do PDF, extrai o texto e normaliza
 # quebras de linha para espacos. Isso deixa o conteudo pronto para as etapas de
 # PLN.
-
+# ==========================================================================================
 
 def ler_pdf(caminho_pdf: str | Path) -> str:
     """Le todas as paginas de um PDF e retorna o texto concatenado."""
@@ -89,14 +92,14 @@ def ler_pdf(caminho_pdf: str | Path) -> str:
 
     return " ".join(paginas).replace("\n", " ").strip()
 
-
+# ==========================================================================================
 # 4. Preparacao dos recursos de PLN
 #
 # O pre-processamento usa stopwords em portugues e o modelo `pt_core_news_sm`
 # do spaCy. Se algum recurso linguistico nao estiver disponivel localmente, o
 # notebook usa uma alternativa minima para permitir a execucao, sem instalar
 # bibliotecas novas.
-
+# ==========================================================================================
 
 def carregar_stopwords_portugues() -> set[str]:
     """Carrega stopwords em portugues do NLTK, com fallback local."""
@@ -132,13 +135,13 @@ def preparar_recursos_pln():
 
     return _nlp, _stop_words
 
-
+# ==========================================================================================
 # 5. Tratamento de linguagem natural
 #
 # A funcao `tratamento_pln` aplica as etapas solicitadas no roteiro:
 # normalizacao, remocao de numeros e pontuacao, tokenizacao, remocao de
 # stopwords e lematizacao quando o modelo carregado fornece essa informacao.
-
+# ==========================================================================================
 
 def tratamento_pln(
     texto: str,
@@ -167,13 +170,13 @@ def tratamento_pln(
 
     return " ".join(tokens_limpos)
 
-
+# ==========================================================================================
 # 6. Divisao do texto em chunks
 #
 # A busca semantica funciona melhor quando o texto e dividido em blocos menores.
 # O roteiro usa `chunk_size=150` e `chunk_overlap=30`, valores mantidos nesta
 # implementacao.
-
+# ==========================================================================================
 
 def dividir_em_chunks(
     texto: str,
@@ -187,13 +190,13 @@ def dividir_em_chunks(
     )
     return text_splitter.split_text(texto)
 
-
+# ==========================================================================================
 # 7. Geracao de embeddings
 #
 # Cada chunk e convertido em um vetor numerico pelo modelo `all-MiniLM-L6-v2`.
 # Esses vetores representam o significado aproximado dos trechos e serao
 # gravados no banco vetorial.
-
+# ==========================================================================================
 
 def carregar_modelo_embedding(
     model_name: str = DEFAULT_EMBEDDING_MODEL,
@@ -210,12 +213,12 @@ def gerar_embeddings(
     """Gera embeddings para a lista de chunks."""
     return embedding_model.encode(chunks, show_progress_bar=show_progress_bar)
 
-
+# ==========================================================================================
 # 8. Criacao da colecao no ChromaDB
 #
 # A colecao abaixo e criada em memoria. Isso simplifica o laboratorio: a cada
 # execucao completa do notebook, os vetores sao reconstruidos a partir do PDF.
-
+# ==========================================================================================
 
 def criar_colecao(
     chunks: list[str],
@@ -262,13 +265,13 @@ def criar_indice_pln(
         "collection": collection,
     }
 
-
+# ==========================================================================================
 # 9. Busca semantica
 #
 # A consulta e transformada em embedding e comparada com os vetores armazenados
 # no ChromaDB. Quanto menor a distancia, maior a similaridade semantica entre a
 # pergunta e o trecho recuperado.
-
+# ==========================================================================================
 
 def buscar_semanticamente(
     pergunta: str,
@@ -294,25 +297,11 @@ def buscar_semanticamente(
     )
 
 
-# 10. Visualizacao dos resultados
-#
-# A celula final percorre os campos retornados pelo ChromaDB e apresenta os
-# documentos recuperados de forma legivel.
-
-
-def imprimir_resultados(resultados: dict) -> None:
-    """Imprime IDs, distancias e documentos retornados por consulta ChromaDB."""
-    ids = resultados.get("ids", [[]])[0]
-    distances = resultados.get("distances", [[]])[0]
-    documents = resultados.get("documents", [[]])[0]
-
-    for doc_id, distance, document in zip(ids, distances, documents):
-        print(f"ID: {doc_id}")
-        print(f"Distancia: {distance}")
-        print(f"Documento: {document}")
-        print("-" * 40)
-
-
+# ==========================================================================================
+# Ferramenta principal do subagente de PLN.
+# Ela garante que o indice semantico do PDF exista, executa uma busca pelos
+# trechos mais relevantes para a pergunta e guarda o texto recuperado para uso posterior.
+# ==========================================================================================
 @tool
 def extrair_texto_pdf_semantico(
     pergunta: str = "Qual e o conteudo principal do documento?",
@@ -341,7 +330,11 @@ def extrair_texto_pdf_semantico(
 
     return f"PDF {_ultimo_pdf_lido.name} lido"
 
-
+# ==========================================================================================
+# Ferramenta auxiliar que informa o tamanho do conteudo recuperado.
+# Ela usa o texto salvo pela ultima chamada de extrair_texto_pdf_semantico e
+# retorna apenas a quantidade de caracteres, seguindo o fluxo pedido no prompt.
+# ==========================================================================================
 @tool
 def contar_caracteres_lidos() -> str:
     """
@@ -350,13 +343,21 @@ def contar_caracteres_lidos() -> str:
     """
     return f"Total de caracteres: {len(_ultimo_texto_lido)}"
 
-
+# ==========================================================================================
+# Lista de ferramentas disponiveis para o subagente de PLN.
+# O agente so tera acesso a estas funcoes, o que restringe sua atuacao a leitura
+# semantica do PDF e contagem dos caracteres dos trechos encontrados.
+# ==========================================================================================
 tools_subagente_pln = [
     extrair_texto_pdf_semantico,
     contar_caracteres_lidos,
 ]
 
-
+# ==========================================================================================
+# Prompt de sistema que define o papel e as regras do subagente.
+# Ele obriga o fluxo correto: primeiro extrair trechos do PDF com busca semantica,
+# depois contar caracteres, sem executar tarefas fora do escopo de PLN.
+# ==========================================================================================
 PROMPT_AGENTE = (
     "Voce e um especialista em leitura de PDFs com PLN e busca semantica. "
     "Use SOMENTE as ferramentas extrair_texto_pdf_semantico e "
@@ -368,6 +369,11 @@ PROMPT_AGENTE = (
     "NUNCA faca calculos, conversoes de unidades ou buscas web."
 )
 
+# ==========================================================================================
+# Fabrica o subagente de PLN a partir do modelo recebido.
+# O create_react_agent monta um agente ReAct com as ferramentas e o prompt
+# definidos acima, nomeando-o para identificacao no fluxo multiagente.
+# ==========================================================================================
 def criar_subagente_pln(model):
     return create_react_agent(
         model=model,
@@ -375,30 +381,3 @@ def criar_subagente_pln(model):
         prompt=PROMPT_AGENTE,
         name="subagente_pln",
     )
-
-
-# Experimentos sugeridos
-#
-# Troque o valor da variavel `pergunta` para testar outras consultas, por
-# exemplo:
-#
-# - `Explique aprendizado nao supervisionado.`
-# - `Quais redes neurais sao usadas em NLP?`
-# - `O que e um banco de dados vetorial?`
-
-
-if __name__ == "__main__":
-    indice = criar_indice_pln(show_progress_bar=False)
-
-    print(f"PDF selecionado: {indice['pdf_path'].resolve()}")
-    print("Tamanho do texto original em caracteres:", len(indice["texto_pdf"]))
-    print(indice["texto_pdf"][:1000])
-    print("Tamanho do texto tratado em caracteres:", len(indice["texto_pdf_tratado"]))
-    print(indice["texto_pdf_tratado"][:1000])
-    print("Quantidade de chunks:", len(indice["chunks"]))
-    print(indice["chunks"][:5])
-    print("Documentos adicionados a colecao:", indice["collection"].count())
-
-    pergunta = "Como ensinar computadores a reconhecer padroes?"
-    resultados = buscar_semanticamente(pergunta, indice=indice, n_resultados=3)
-    imprimir_resultados(resultados)

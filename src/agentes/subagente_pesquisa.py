@@ -1,7 +1,11 @@
 from langgraph.prebuilt import create_react_agent
 from langchain_core.tools import tool
 
-
+# ==========================================================================================
+# Define uma ferramenta de pesquisa textual simulada para o subagente.
+# A funcao recebe uma consulta, procura palavras-chave em uma base local de respostas
+# e retorna uma informacao correspondente ou uma resposta padrao quando nao ha match.
+# ==========================================================================================
 @tool
 def buscar_na_web(query: str) -> str:
     """
@@ -24,7 +28,11 @@ def buscar_na_web(query: str) -> str:
     chave = next((k for k in resultados if k in query.lower()), "default")
     return resultados[chave]
 
-
+# ==========================================================================================
+# Define uma ferramenta auxiliar para reduzir textos longos.
+# Se o conteudo tiver ate 50 palavras, ele e mantido como esta; caso contrario,
+# a funcao retorna apenas as 50 primeiras palavras seguidas de reticencias.
+# ==========================================================================================
 @tool
 def resumir_texto(texto: str) -> str:
     """
@@ -42,12 +50,22 @@ tools_subagente_pesquisa = [
     resumir_texto,
 ]
 
+# ==========================================================================================
+# Prompt de sistema que orienta o comportamento do subagente de pesquisa.
+# Ele delimita o papel do agente, indica quais ferramentas devem ser usadas e
+# impede que este subagente tente executar tarefas fora do seu escopo, como PDFs.
+# ==========================================================================================
 PROMPT_AGENTE = (
     "Voce e um especialista em pesquisa de informacoes textuais. "
     "Use as ferramentas buscar_na_web e resumir_texto. "
     "NUNCA tente fazer extracao de dados em PDF."
 )
 
+# ==========================================================================================
+# Fabrica o subagente de pesquisa usando o modelo recebido.
+# O agente e criado no padrao ReAct do LangGraph, com as ferramentas e o prompt
+# definidos acima, ficando pronto para ser chamado pelo fluxo principal.
+# ==========================================================================================
 def criar_subagente_pesquisa(model):
     return create_react_agent(
         model=model,

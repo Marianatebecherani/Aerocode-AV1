@@ -3,6 +3,11 @@ from typing import Any, Sequence
 from langchain_core.language_models.chat_models import BaseChatModel
 from langgraph_supervisor import create_supervisor
 
+# ==========================================================================================
+# Prompt que orienta o supervisor a escolher o subagente correto.
+# Ele descreve as responsabilidades de cada especialista e define quando delegar
+# tarefas de pesquisa textual, leitura de PDF, PLN e contagem de caracteres.
+# ==========================================================================================
 PROMPT_SUPERVISOR = (
     "Voce e um supervisor que delega tarefas a dois especialistas:\n"
     "- subagente_pesquisa: para buscar informacoes textuais e conceitos\n"
@@ -15,6 +20,11 @@ PROMPT_SUPERVISOR = (
     "agente separadamente e consolide as respostas."
 )
 
+# ==========================================================================================
+# Cria o agente supervisor que coordena os subagentes recebidos.
+# A funcao registra a lista de agentes, conecta o modelo de linguagem e compila
+# o fluxo para que o supervisor delegue tarefas e devolva a ultima mensagem gerada.
+# ==========================================================================================
 def criar_agente_supervisor(
     llm: BaseChatModel,
     agentes: Sequence[Any],
